@@ -1,8 +1,7 @@
-package ru.practicum.shareit.user.model;
+package ru.practicum.shareit.user.repository.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
 import javax.validation.constraints.Email;
 
 @Data
