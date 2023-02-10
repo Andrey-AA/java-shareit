@@ -85,6 +85,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkEmailExistence(User user) {
+
         for(User key: userRepositoryImpl.getAllUsers()) {
             if (Objects.equals(user.getEmail(), key.getEmail())) {
                 throw new UserAlreadyExistException(String.format(

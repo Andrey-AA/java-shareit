@@ -33,9 +33,10 @@ public class BookingMapper {
     public List<BookingDto> toDTOs(List<Booking> bookings) {
         ArrayList<BookingDto> bookingsDto = new ArrayList<>();
 
-        for(Booking booking: bookings) {
+        for (Booking booking: bookings) {
             bookingsDto.add(toDto(booking));
         }
+
         return bookingsDto;
     }
 }

@@ -32,9 +32,10 @@ public class ItemMapper {
     public List<ItemDto> toDTOs(List<Item> items) {
         ArrayList<ItemDto> itemsDto = new ArrayList<>();
 
-        for(Item item: items) {
+        for (Item item: items) {
             itemsDto.add(toDto(item));
         }
+
         return itemsDto;
     }
 }

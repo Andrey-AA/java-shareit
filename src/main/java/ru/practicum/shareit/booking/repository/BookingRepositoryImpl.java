@@ -33,7 +33,7 @@ public class BookingRepositoryImpl implements BookingRepository {
     public Booking createBooking(Booking booking) {
         bookings.put(booking.getId(), booking);
         itemRepository.findItemById(booking.getItem()).setAvailable(false);
-        log.info("Установлен статус 'WAITING'. Ожидается подтверждение бронирования владельцем" );
+        log.info("Установлен статус 'WAITING'. Ожидается подтверждение бронирования владельцем");
             return booking;
     }
 

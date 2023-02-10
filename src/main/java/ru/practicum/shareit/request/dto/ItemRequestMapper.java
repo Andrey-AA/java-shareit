@@ -31,7 +31,7 @@ public class ItemRequestMapper {
     public List<ItemRequestDto> toDTOs(List<ItemRequest> itemRequests) {
         ArrayList<ItemRequestDto> itemRequestsDto = new ArrayList<>();
 
-        for(ItemRequest itemRequest: itemRequests) {
+        for (ItemRequest itemRequest: itemRequests) {
             itemRequestsDto.add(toDto(itemRequest));
         }
         return itemRequestsDto;

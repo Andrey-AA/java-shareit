@@ -45,11 +45,13 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingMapper.toBooking(bookingDto);
 
         log.info("Началась проверка возможности бронирования вещи");
-        if( (Boolean.FALSE.equals(itemRepository.findItemById(booking.getItem()).getAvailable()))
-                || (Objects.equals(booking.getBooker(), itemRepository.findItemById(booking.getItem()).getOwner())) ) {
+
+        if ((Boolean.FALSE.equals(itemRepository.findItemById(booking.getItem()).getAvailable()))
+                || (Objects.equals(booking.getBooker(), itemRepository.findItemById(booking.getItem()).getOwner()))) {
             throw new ItemNotAvailableException(String.format(
                     "Вещь с id %s недоступна для бронирования.", itemRepository.findItemById(booking.getItem()).getId()));
         }
+
         log.info("Проверка доступности завершена успешно");
         booking.setId(idGenerator());
         booking.setStatus(BookingStatus.valueOf("WAITING"));
@@ -64,25 +66,28 @@ public class BookingServiceImpl implements BookingService {
 
         Booking booking = bookingMapper.toBooking(bookingDto);
 
-        if ( (bookingDto.getStatus().equals(BookingStatus.valueOf("CANCELED")))
+        if ((bookingDto.getStatus().equals(BookingStatus.valueOf("CANCELED")))
                 || (bookingDto.getStatus().equals(BookingStatus.valueOf("APPROVED")))
-                || (bookingDto.getStatus().equals(BookingStatus.valueOf("REJECTED"))) ) {
+                || (bookingDto.getStatus().equals(BookingStatus.valueOf("REJECTED")))) {
 
             log.info("Началось создание объекта бронирования");
             findBookingById(bookingId).setStatus(booking.getStatus());
             booking.setId(bookingId);
 
             log.info("Началась проверка возможности изменения статуса бронирования");
-            if( (booking.getStatus().equals(BookingStatus.APPROVED))
-                    || (booking.getStatus().equals(BookingStatus.REJECTED)) ) {
-                if(!Objects.equals(userId, itemRepository.findItemById(booking.getItem()).getOwner())) {
+
+            if ((booking.getStatus().equals(BookingStatus.APPROVED))
+                    || (booking.getStatus().equals(BookingStatus.REJECTED))) {
+
+                if (!Objects.equals(userId, itemRepository.findItemById(booking.getItem()).getOwner())) {
                     throw new IncorrectBookingStatusException("запрошен некорректный статус бронирования");
                 }
                 booking.setStatus(booking.getStatus());
             }
 
-            if(booking.getStatus().equals(BookingStatus.CANCELED)) {
-                if(!Objects.equals(userId, booking.getBooker())) {
+            if (booking.getStatus().equals(BookingStatus.CANCELED)) {
+
+                if (!Objects.equals(userId, booking.getBooker())) {
                     throw new IncorrectBookingStatusException("запрошен некорректный статус бронирования");
                 }
                 booking.setStatus(BookingStatus.valueOf("CANCELED"));

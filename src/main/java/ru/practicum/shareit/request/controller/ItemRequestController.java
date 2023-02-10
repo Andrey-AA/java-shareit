@@ -25,4 +25,5 @@ public class ItemRequestController {
     public Collection<ItemRequestDto> getAllItemRequests() {
         return itemRequestServiceImpl.getAllItemRequests();
     }
+
 }          

@@ -29,9 +29,10 @@ public class UserMapper {
     public List<UserDto> toDTOs(List<User> users) {
         ArrayList<UserDto> usersDto = new ArrayList<>();
 
-        for(User user: users) {
+        for (User user: users) {
             usersDto.add(toDTO(user));
         }
+
         return usersDto;
     }
 }

@@ -9,7 +9,8 @@ public enum IdentityGenerator {
 
     public Long generateId(Class<?> clazz) {
         long id;
-        if(idMap.containsKey(clazz)) {
+
+        if (idMap.containsKey(clazz)) {
             id = idMap.get(clazz) + 1;
             idMap.put(clazz,id);
         } else {

@@ -16,6 +16,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                 String.format("Ошибка с полем \"%s\".", e.getParameter())
         );
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleInvalidEmailException(final InvalidEmailException e) {
