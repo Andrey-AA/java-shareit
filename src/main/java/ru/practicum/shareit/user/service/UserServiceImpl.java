@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.InvalidEmailException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.UserAlreadyExistException;
+import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.repository.model.User;
 import ru.practicum.shareit.user.dto.UserMapper;
-import ru.practicum.shareit.user.repository.UserRepositoryImpl;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.utils.IdentityGenerator;
 import java.util.List;
@@ -19,12 +19,12 @@ import java.util.Objects;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-    private final UserRepositoryImpl userRepositoryImpl;
+    private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     @Override
     public List<UserDto> getAllUsers() {
-        return userMapper.toDTOs(userRepositoryImpl.getAllUsers());
+        return userMapper.toDTOs(userRepository.getAllUsers());
     }
 
     @Override
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toUser(userDto);
         checkEmailExistence(user);
         user.setId(idGenerator());
-        user = userRepositoryImpl.createUser(user);
+        user = userRepository.createUser(user);
         return userMapper.toDTO(user);
     }
 
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
             user.setName(findUserById(id).getName());
         }
 
-        user = userRepositoryImpl.updateUser(user, id);
+        user = userRepository.updateUser(user, id);
         return userMapper.toDTO(user);
     }
 
@@ -62,14 +62,14 @@ public class UserServiceImpl implements UserService {
     public UserDto removeUser(Long id) {
         checkUserExistence(id);
         log.info("Пользователь успешно удален");
-        User user = userRepositoryImpl.removeUser(id);
+        User user = userRepository.removeUser(id);
         return userMapper.toDTO(user);
     }
 
     @Override
     public UserDto findUserById(long id) {
         log.info("Пользователь успешно найден по ID");
-        User user = userRepositoryImpl.findUserById(id);
+        User user = userRepository.findUserById(id);
         return userMapper.toDTO(user);
     }
 
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
 
     public void checkEmailExistence(User user) {
 
-        for (User key: userRepositoryImpl.getAllUsers()) {
+        for (User key: userRepository.getAllUsers()) {
             if (Objects.equals(user.getEmail(), key.getEmail())) {
                 throw new UserAlreadyExistException(String.format(
                         "Пользователь с электронной почтой %s уже зарегистрирован.",
@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public void checkUserExistence(Long userId) {
-        if (Objects.isNull(userRepositoryImpl.findUserById(userId))) {
+        if (Objects.isNull(userRepository.findUserById(userId))) {
             throw new EntityNotFoundException(String.format(
                     "Пользователь с id %s не зарегистрирован.",
                     userId));
