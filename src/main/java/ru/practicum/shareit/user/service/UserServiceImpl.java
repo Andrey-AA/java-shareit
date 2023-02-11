@@ -45,11 +45,15 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toUser(userDto);
         checkUserExistence(id);
         user.setId(id);
-        checkEmailExistence(user);
+
+        if (!Objects.equals(userDto.getEmail(),findUserById(id).getEmail())) {
+            checkEmailExistence(user);
+        }
 
         if (Objects.isNull(user.getEmail()) || user.getEmail().isBlank()) {
             user.setEmail(findUserById(id).getEmail());
         }
+
         if (Objects.isNull(user.getName()) || user.getName().isBlank()) {
             user.setName(findUserById(id).getName());
         }
