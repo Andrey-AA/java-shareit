@@ -1,7 +1,7 @@
 package ru.practicum.shareit.user.service;
 
 import ru.practicum.shareit.user.dto.UserDto;
-
+import ru.practicum.shareit.user.repository.model.User;
 import java.util.Collection;
 
 public interface UserService {
@@ -16,4 +16,7 @@ public interface UserService {
 
     UserDto findUserById(long id);
 
+    void checkEmailExistence(User user);
+
+    void checkUserExistence(Long userId);
 }

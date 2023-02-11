@@ -2,16 +2,17 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.InvalidItemParametersException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.repository.ItemRepositoryImpl;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
-import ru.practicum.shareit.user.service.UserServiceImpl;
+import ru.practicum.shareit.request.service.ItemRequestService;
+import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.utils.IdentityGenerator;
 
 import java.util.ArrayList;
@@ -23,18 +24,17 @@ import java.util.Objects;
 @Slf4j
 public class ItemServiceImpl implements ItemService {
 
-    private final ItemRepositoryImpl itemRepositoryImpl;
-
-    private final UserServiceImpl userServiceImpl;
+    private final ItemRepository itemRepository;
+    private final UserService userService;
     private final ItemMapper itemMapper;
-    private final ItemRequestServiceImpl itemRequestServiceImpl;
+    private final ItemRequestService itemRequestService;
 
 
     @Override
     public ItemDto createItem(ItemDto itemDto, Long ownerId) {
         checkItemParameters(itemDto);
-        userServiceImpl.checkUserExistence(ownerId);
-        List<ItemRequestDto> requests = itemRequestServiceImpl.getAllItemRequests();
+        userService.checkUserExistence(ownerId);
+        List<ItemRequestDto> requests = itemRequestService.getAllItemRequests();
 
         for (ItemRequestDto itemRequestDto : requests) {
 
@@ -46,64 +46,65 @@ public class ItemServiceImpl implements ItemService {
         itemDto.setOwner(ownerId);
         Item item = itemMapper.toItem(itemDto);
         item.setId(idGenerator());
-        itemRepositoryImpl.createItem(item);
+        itemRepository.createItem(item);
         log.info("Вещь успешно добавлена");
         return itemMapper.toDto(item);
     }
 
     @Override
     public ItemDto updateItem(ItemDto itemDto, Long ownerId, Long itemId) {
-        userServiceImpl.checkUserExistence(ownerId);
-        Item item = itemMapper.toItem(itemDto);
+        userService.checkUserExistence(ownerId);
+        Item NewItem = itemMapper.toItem(itemDto);
 
-        if (Objects.isNull(itemRepositoryImpl.findItemById(itemId))) {
+        if (Objects.isNull(itemRepository.findItemById(itemId))) {
             throw new EntityNotFoundException(String.format(
                     "Вещь с id %s не зарегистрирована.", itemId));
         }
-        item.setId(itemId);
+        NewItem.setId(itemId);
+        ItemDto item = findItemById(itemId);
 
-        if (Objects.isNull(item.getName()) || item.getName().isBlank()) {
-            item.setName(findItemById(itemId).getName());
-        }
-
-        if (Objects.isNull(item.getDescription()) || item.getDescription().isBlank()) {
-            item.setDescription(findItemById(itemId).getDescription());
-        }
-
-        if (Objects.isNull(item.getAvailable())) {
-            item.setAvailable(findItemById(itemId).getAvailable());
-        }
-
-        if (Objects.isNull(item.getOwner())) {
-            item.setOwner(findItemById(itemId).getOwner());
+        if (StringUtils.isEmpty(NewItem.getName()) || StringUtils.isBlank(NewItem.getName())) {
+            NewItem.setName(item.getName());
         }
 
 
-        if (Objects.isNull(item.getRequest()) || item.getName().isBlank()) {
-            item.setRequest(findItemById(itemId).getRequest());
+        if (StringUtils.isEmpty(NewItem.getDescription()) || StringUtils.isBlank(NewItem.getDescription())) {
+            NewItem.setDescription(item.getDescription());
+        }
+
+        if (Objects.isNull(NewItem.getAvailable())) {
+            NewItem.setAvailable(item.getAvailable());
         }
 
 
-        if (!Objects.equals(item.getOwner(), ownerId)) {
+        if (Objects.isNull(NewItem.getOwner())) {
+            NewItem.setOwner(item.getOwner());
+        }
+
+        if (Objects.isNull(NewItem.getRequest()) ||  StringUtils.isBlank(NewItem.getName())) {
+            NewItem.setRequest(item.getRequest());
+        }
+
+        if (!Objects.equals(NewItem.getOwner(), ownerId)) {
             throw new EntityNotFoundException(String.format(
                     "Вещь с id %s относится к другому владельцу.", itemId));
         }
 
-        item = itemRepositoryImpl.updateItem(item, ownerId, itemId);
+        NewItem = itemRepository.updateItem(NewItem, ownerId, itemId);
         log.info("Вещь успешно обновлена");
-        return itemMapper.toDto(item);
+        return itemMapper.toDto(NewItem);
     }
 
     @Override
     public ItemDto findItemById(long id) {
-        Item item = itemRepositoryImpl.findItemById(id);
+        Item item = itemRepository.findItemById(id);
         log.info("Вещь успешно найдена по ID");
         return itemMapper.toDto(item);
     }
 
     @Override
     public List<ItemDto> findItemsByUser(long ownerId) {
-        List<Item> allItems = itemRepositoryImpl.getAllItems();
+        List<Item> allItems = itemRepository.getAllItems();
         ArrayList<Item> userItems = new ArrayList<>();
 
         for (Item item : allItems) {
@@ -120,7 +121,7 @@ public class ItemServiceImpl implements ItemService {
         if (text.isEmpty()) {
             return new ArrayList<>();
         }
-        List<Item> allItems = itemRepositoryImpl.getAllItems();
+        List<Item> allItems = itemRepository.getAllItems();
         ArrayList<Item> searchItems = new ArrayList<>();
         for (Item item : allItems) {
             if ((item.getName().toLowerCase().contains(text.trim().toLowerCase())

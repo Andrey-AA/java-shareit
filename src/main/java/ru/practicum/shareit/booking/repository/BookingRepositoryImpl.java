@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.item.repository.ItemRepositoryImpl;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import java.util.*;
 
 @Repository
@@ -12,10 +12,10 @@ import java.util.*;
 public class BookingRepositoryImpl implements BookingRepository {
 
     private final Map<Long, Booking> bookings = new HashMap<>();
-    private final ItemRepositoryImpl itemRepository;
+    private final ItemRepository itemRepository;
 
     @Autowired
-    public BookingRepositoryImpl(ItemRepositoryImpl itemRepository) {
+    public BookingRepositoryImpl(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
     }
 

@@ -7,11 +7,11 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.repository.BookingRepositoryImpl;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.IncorrectBookingStatusException;
 import ru.practicum.shareit.exception.ItemNotAvailableException;
-import ru.practicum.shareit.item.repository.ItemRepositoryImpl;
-import ru.practicum.shareit.user.service.UserServiceImpl;
+import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.utils.IdentityGenerator;
 import java.util.List;
 import java.util.Objects;
@@ -21,21 +21,21 @@ import java.util.Objects;
 @Slf4j
 public class BookingServiceImpl implements BookingService {
 
-    private final BookingRepositoryImpl bookingRepositoryImpl;
+    private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
-    private final UserServiceImpl userServiceImpl;
-    private final ItemRepositoryImpl itemRepository;
+    private final UserService userService;
+    private final ItemRepository repository;
 
     @Override
     public List<BookingDto> getAllBookings() {
         log.info("Все бронирования найдены");
-        return bookingMapper.toDTOs(bookingRepositoryImpl.getAllBookings());
+        return bookingMapper.toDTOs(bookingRepository.getAllBookings());
     }
 
     @Override
     public BookingDto findBookingById(Long id) {
         log.info("Бронирование успешно найдено по ID");
-        Booking booking = bookingRepositoryImpl.findBookingById(id);
+        Booking booking = bookingRepository.findBookingById(id);
         return bookingMapper.toDto(booking);
     }
 
@@ -46,54 +46,49 @@ public class BookingServiceImpl implements BookingService {
 
         log.info("Началась проверка возможности бронирования вещи");
 
-        if ((Boolean.FALSE.equals(itemRepository.findItemById(booking.getItem()).getAvailable()))
-                || (Objects.equals(booking.getBooker(), itemRepository.findItemById(booking.getItem()).getOwner()))) {
+        if ((Boolean.FALSE.equals(repository.findItemById(booking.getItem()).getAvailable()))
+                || (Objects.equals(booking.getBooker(), repository.findItemById(booking.getItem()).getOwner()))) {
             throw new ItemNotAvailableException(String.format(
-                    "Вещь с id %s недоступна для бронирования.", itemRepository.findItemById(booking.getItem()).getId()));
+                    "Вещь с id %s недоступна для бронирования.", repository.findItemById(booking.getItem()).getId()));
         }
 
         log.info("Проверка доступности завершена успешно");
         booking.setId(idGenerator());
-        booking.setStatus(BookingStatus.valueOf("WAITING"));
-        bookingRepositoryImpl.createBooking(booking);
+        booking.setStatus(BookingStatus.WAITING);
+        bookingRepository.createBooking(booking);
         return bookingMapper.toDto(booking);
     }
 
     @Override
     public BookingDto updateBooking(BookingDto bookingDto, Long userId, Long bookingId) {
         log.info("Поступил запрос на изменение нового бронирования");
-        userServiceImpl.checkUserExistence(userId);
+        userService.checkUserExistence(userId);
 
         Booking booking = bookingMapper.toBooking(bookingDto);
 
-        if ((bookingDto.getStatus().equals(BookingStatus.valueOf("CANCELED")))
-                || (bookingDto.getStatus().equals(BookingStatus.valueOf("APPROVED")))
-                || (bookingDto.getStatus().equals(BookingStatus.valueOf("REJECTED")))) {
-
-            log.info("Началось создание объекта бронирования");
-            findBookingById(bookingId).setStatus(booking.getStatus());
+        if (bookingDto.getStatus() != BookingStatus.WAITING) {
             booking.setId(bookingId);
 
             log.info("Началась проверка возможности изменения статуса бронирования");
 
-            if ((booking.getStatus().equals(BookingStatus.APPROVED))
-                    || (booking.getStatus().equals(BookingStatus.REJECTED))) {
+            if ((booking.getStatus() == (BookingStatus.APPROVED))
+                    || (booking.getStatus() == (BookingStatus.REJECTED))) {
 
-                if (!Objects.equals(userId, itemRepository.findItemById(booking.getItem()).getOwner())) {
+                if (!Objects.equals(userId, repository.findItemById(booking.getItem()).getOwner())) {
                     throw new IncorrectBookingStatusException("запрошен некорректный статус бронирования");
                 }
                 booking.setStatus(booking.getStatus());
             }
 
-            if (booking.getStatus().equals(BookingStatus.CANCELED)) {
+            if (booking.getStatus() == (BookingStatus.CANCELED)) {
 
                 if (!Objects.equals(userId, booking.getBooker())) {
                     throw new IncorrectBookingStatusException("запрошен некорректный статус бронирования");
                 }
-                booking.setStatus(BookingStatus.valueOf("CANCELED"));
+                booking.setStatus(BookingStatus.CANCELED);
             }
             log.info("Изменение статуса завершено ");
-            bookingRepositoryImpl.updateBooking(booking, userId, bookingId);
+            bookingRepository.updateBooking(booking, userId, bookingId);
         } else {
             throw new IncorrectBookingStatusException("запрошен некорректный статус бронирования ");
         }

@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
         return IdentityGenerator.INSTANCE.generateId(User.class);
     }
 
-    private void checkEmailExistence(User user) {
+    public void checkEmailExistence(User user) {
 
         for (User key: userRepositoryImpl.getAllUsers()) {
             if (Objects.equals(user.getEmail(), key.getEmail())) {

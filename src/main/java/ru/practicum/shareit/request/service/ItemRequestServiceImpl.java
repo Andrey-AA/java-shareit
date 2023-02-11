@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
-import ru.practicum.shareit.request.repository.ItemRequestRepositoryImpl;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.utils.IdentityGenerator;
 
 import java.time.LocalDateTime;
@@ -17,12 +17,12 @@ import java.util.List;
 @Slf4j
 public class ItemRequestServiceImpl implements ItemRequestService {
 
-    private final ItemRequestRepositoryImpl itemRequestRepositoryImpl;
+    private final ItemRequestRepository itemRequestRepository;
     private final ItemRequestMapper itemRequestMapper;
 
     @Override
     public List<ItemRequestDto> getAllItemRequests() {
-        return itemRequestMapper.toDTOs(itemRequestRepositoryImpl.getAllItemRequests());
+        return itemRequestMapper.toDTOs(itemRequestRepository.getAllItemRequests());
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         ItemRequest itemRequest = itemRequestMapper.toItemRequest(itemRequestDto);
         itemRequest.setId(idGenerator());
         itemRequest.setCreated(setTime());
-        itemRequest = itemRequestRepositoryImpl.createItemRequest(itemRequest);
+        itemRequest = itemRequestRepository.createItemRequest(itemRequest);
         return itemRequestMapper.toDto(itemRequest);
     }
 

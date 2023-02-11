@@ -1,5 +1,5 @@
 package ru.practicum.shareit.item.dto;
-
+import lombok.NonNull;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.model.Item;
 import java.util.ArrayList;
@@ -7,6 +7,7 @@ import java.util.List;
 
 @Component
 public class ItemMapper {
+    @NonNull
     public Item toItem(ItemDto itemDto) {
         return Item.builder()
                 .id(itemDto.getId())
@@ -17,7 +18,7 @@ public class ItemMapper {
                 .request(itemDto.getRequest())
                 .build();
     }
-
+    @NonNull
     public ItemDto toDto(Item item) {
         return ItemDto.builder()
                 .id(item.getId())
@@ -28,7 +29,7 @@ public class ItemMapper {
                 .request(item.getRequest())
                 .build();
     }
-
+    @NonNull
     public List<ItemDto> toDTOs(List<Item> items) {
         ArrayList<ItemDto> itemsDto = new ArrayList<>();
 
