@@ -7,6 +7,7 @@ import java.util.List;
 
 @Component
 public class ItemMapper {
+
     @NonNull
     public Item toItem(ItemDto itemDto) {
         return Item.builder()
@@ -18,6 +19,7 @@ public class ItemMapper {
                 .request(itemDto.getRequest())
                 .build();
     }
+
     @NonNull
     public ItemDto toDto(Item item) {
         return ItemDto.builder()
@@ -29,6 +31,7 @@ public class ItemMapper {
                 .request(item.getRequest())
                 .build();
     }
+
     @NonNull
     public List<ItemDto> toDTOs(List<Item> items) {
         ArrayList<ItemDto> itemsDto = new ArrayList<>();

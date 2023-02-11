@@ -54,45 +54,45 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto updateItem(ItemDto itemDto, Long ownerId, Long itemId) {
         userService.checkUserExistence(ownerId);
-        Item NewItem = itemMapper.toItem(itemDto);
+        Item newItem = itemMapper.toItem(itemDto);
 
         if (Objects.isNull(itemRepository.findItemById(itemId))) {
             throw new EntityNotFoundException(String.format(
                     "Вещь с id %s не зарегистрирована.", itemId));
         }
-        NewItem.setId(itemId);
+        newItem.setId(itemId);
         ItemDto item = findItemById(itemId);
 
-        if (StringUtils.isEmpty(NewItem.getName()) || StringUtils.isBlank(NewItem.getName())) {
-            NewItem.setName(item.getName());
+        if (StringUtils.isEmpty(newItem.getName()) || StringUtils.isBlank(newItem.getName())) {
+            newItem.setName(item.getName());
         }
 
 
-        if (StringUtils.isEmpty(NewItem.getDescription()) || StringUtils.isBlank(NewItem.getDescription())) {
-            NewItem.setDescription(item.getDescription());
+        if (StringUtils.isEmpty(newItem.getDescription()) || StringUtils.isBlank(newItem.getDescription())) {
+            newItem.setDescription(item.getDescription());
         }
 
-        if (Objects.isNull(NewItem.getAvailable())) {
-            NewItem.setAvailable(item.getAvailable());
+        if (Objects.isNull(newItem.getAvailable())) {
+            newItem.setAvailable(item.getAvailable());
         }
 
 
-        if (Objects.isNull(NewItem.getOwner())) {
-            NewItem.setOwner(item.getOwner());
+        if (Objects.isNull(newItem.getOwner())) {
+            newItem.setOwner(item.getOwner());
         }
 
-        if (Objects.isNull(NewItem.getRequest()) ||  StringUtils.isBlank(NewItem.getName())) {
-            NewItem.setRequest(item.getRequest());
+        if (Objects.isNull(newItem.getRequest()) ||  StringUtils.isBlank(newItem.getName())) {
+            newItem.setRequest(item.getRequest());
         }
 
-        if (!Objects.equals(NewItem.getOwner(), ownerId)) {
+        if (!Objects.equals(newItem.getOwner(), ownerId)) {
             throw new EntityNotFoundException(String.format(
                     "Вещь с id %s относится к другому владельцу.", itemId));
         }
 
-        NewItem = itemRepository.updateItem(NewItem, ownerId, itemId);
+        newItem = itemRepository.updateItem(newItem, ownerId, itemId);
         log.info("Вещь успешно обновлена");
-        return itemMapper.toDto(NewItem);
+        return itemMapper.toDto(newItem);
     }
 
     @Override
