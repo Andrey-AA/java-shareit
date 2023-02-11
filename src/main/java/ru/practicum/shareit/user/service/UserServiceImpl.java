@@ -37,7 +37,8 @@ public class UserServiceImpl implements UserService {
         user = userRepositoryImpl.createUser(user);
         return userMapper.toDTO(user);
     }
-    
+
+
     @Override
     public UserDto updateUser(UserDto userDto, Long id) {
         log.info("Пользователь успешно обновлен");
