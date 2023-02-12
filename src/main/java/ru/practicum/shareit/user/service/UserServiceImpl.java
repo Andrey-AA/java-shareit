@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.InvalidEmailException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.UserAlreadyExistException;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.repository.model.User;
 import ru.practicum.shareit.user.dto.UserMapper;
