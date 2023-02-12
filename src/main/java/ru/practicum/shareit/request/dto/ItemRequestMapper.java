@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request.dto;
 
+import lombok.NonNull;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.request.model.ItemRequest;
 
@@ -10,7 +11,7 @@ import java.util.List;
 @Component
 public class ItemRequestMapper {
 
-    public ItemRequest toItemRequest(ItemRequestDto itemRequestDto) {
+    public ItemRequest toItemRequest(@NonNull ItemRequestDto itemRequestDto) {
         return new ItemRequest(
                 itemRequestDto.getId(),
                 itemRequestDto.getDescription(),
@@ -19,7 +20,7 @@ public class ItemRequestMapper {
         );
     }
 
-    public ItemRequestDto toDto(ItemRequest itemRequest) {
+    public ItemRequestDto toDto(@NonNull ItemRequest itemRequest) {
         return new ItemRequestDto(
                 itemRequest.getId(),
                 itemRequest.getDescription(),

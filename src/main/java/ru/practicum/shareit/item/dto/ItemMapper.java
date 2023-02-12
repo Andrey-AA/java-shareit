@@ -8,8 +8,7 @@ import java.util.List;
 @Component
 public class ItemMapper {
 
-    @NonNull
-    public Item toItem(ItemDto itemDto) {
+    public Item toItem(@NonNull ItemDto itemDto) {
         return Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName())
@@ -20,8 +19,7 @@ public class ItemMapper {
                 .build();
     }
 
-    @NonNull
-    public ItemDto toDto(Item item) {
+    public ItemDto toDto(@NonNull Item item) {
         return ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
@@ -32,7 +30,6 @@ public class ItemMapper {
                 .build();
     }
 
-    @NonNull
     public List<ItemDto> toDTOs(List<Item> items) {
         ArrayList<ItemDto> itemsDto = new ArrayList<>();
 

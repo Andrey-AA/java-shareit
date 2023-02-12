@@ -16,8 +16,10 @@ public class ItemController {
         this.itemServiceImpl = itemServiceImpl;
     }
 
+    private static final String OWNER_ID = "X-Sharer-User-Id";
+
     @GetMapping
-    public Collection<ItemDto> findItemsByUser(@RequestHeader("X-Sharer-User-Id") Long ownerId) {
+    public Collection<ItemDto> findItemsByUser(@RequestHeader(OWNER_ID) Long ownerId) {
         return itemServiceImpl.findItemsByUser(ownerId);
     }
 
@@ -28,13 +30,13 @@ public class ItemController {
 
 
     @PostMapping
-    public ItemDto createItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") Long ownerId) {
+    public ItemDto createItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader(OWNER_ID) Long ownerId) {
         return itemServiceImpl.createItem(itemDto,ownerId);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@Valid @RequestBody ItemDto itemDto,
-                              @RequestHeader("X-Sharer-User-Id") Long ownerId,
+                              @RequestHeader(OWNER_ID) Long ownerId,
                               @PathVariable(value = "itemId") Long itemId) {
         return itemServiceImpl.updateItem(itemDto, ownerId, itemId);
     }

@@ -63,12 +63,12 @@ public class ItemServiceImpl implements ItemService {
         newItem.setId(itemId);
         ItemDto item = findItemById(itemId);
 
-        if (StringUtils.isEmpty(newItem.getName()) || StringUtils.isBlank(newItem.getName())) {
+        if (StringUtils.isBlank(newItem.getName())) {
             newItem.setName(item.getName());
         }
 
 
-        if (StringUtils.isEmpty(newItem.getDescription()) || StringUtils.isBlank(newItem.getDescription())) {
+        if (StringUtils.isBlank(newItem.getDescription())) {
             newItem.setDescription(item.getDescription());
         }
 
@@ -81,7 +81,7 @@ public class ItemServiceImpl implements ItemService {
             newItem.setOwner(item.getOwner());
         }
 
-        if (Objects.isNull(newItem.getRequest()) ||  StringUtils.isBlank(newItem.getName())) {
+        if (StringUtils.isBlank(newItem.getName())) {
             newItem.setRequest(item.getRequest());
         }
 

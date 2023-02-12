@@ -11,7 +11,7 @@ import java.util.List;
 public class UserMapper {
 
     @NonNull
-    public UserDto toDTO(User user) {
+    public UserDto toDTO(@NonNull User user) {
        return new UserDto(
                user.getId(),
                user.getName(),
@@ -21,7 +21,7 @@ public class UserMapper {
     }
 
     @NonNull
-    public User toUser(UserDto userDto) {
+    public User toUser(@NonNull UserDto userDto) {
         return new User(
                 userDto.getId(),
                 userDto.getName(),

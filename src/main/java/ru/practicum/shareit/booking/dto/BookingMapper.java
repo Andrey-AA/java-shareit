@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.dto;
 
+import lombok.NonNull;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.model.Booking;
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.List;
 @Component
 public class BookingMapper {
 
-    public Booking toBooking(BookingDto bookingDto) {
+    public Booking toBooking(@NonNull BookingDto bookingDto) {
         return new Booking(
                 bookingDto.getId(),
                 bookingDto.getStart(),
@@ -19,7 +20,7 @@ public class BookingMapper {
         );
     }
 
-    public BookingDto toDto(Booking booking) {
+    public BookingDto toDto(@NonNull Booking booking) {
         return new BookingDto(
                 booking.getId(),
                 booking.getStart(),
