@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request.model;
+package ru.practicum.shareit.item.model;
 
 import lombok.*;
 
@@ -8,18 +8,21 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "requests")
+@Table(name = "comments")
 @Getter @Setter @ToString
-public class ItemRequest {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "description", nullable = false)
-    private String description;
+    @Column(name = "text", nullable = false)
+    private String text;
 
-    @JoinColumn(name = "requester_id", nullable = false)
-    private Long requesterId;
+    @JoinColumn(name = "item_id", nullable = false)
+    private Long itemId;
+
+    @JoinColumn(name = "author_name", nullable = false)
+    private String authorName;
 
     @Column(name = "created", nullable = false)
     private LocalDateTime created;
@@ -27,8 +30,8 @@ public class ItemRequest {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ItemRequest)) return false;
-        return id != null && id.equals(((ItemRequest) o).getId());
+        if (!(o instanceof Comment)) return false;
+        return id != null && id.equals(((Comment) o).getId());
     }
 
     @Override
@@ -36,4 +39,3 @@ public class ItemRequest {
         return getClass().hashCode();
     }
 }
-

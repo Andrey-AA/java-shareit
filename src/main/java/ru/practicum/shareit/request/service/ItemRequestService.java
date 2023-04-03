@@ -8,5 +8,5 @@ public interface ItemRequestService {
 
     List<ItemRequestDto> getAllItemRequests();
 
-    ItemRequestDto createItemRequest(ItemRequestDto itemRequestDto);
+    ItemRequestDto saveItemRequest(ItemRequestDto itemRequestDto);
 }

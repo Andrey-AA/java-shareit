@@ -4,14 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.InvalidEmailException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
+import ru.practicum.shareit.exception.InvalidEmailException;
 import ru.practicum.shareit.exception.UserAlreadyExistException;
 import ru.practicum.shareit.user.repository.UserRepository;
-import ru.practicum.shareit.user.repository.model.User;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.utils.IdentityGenerator;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -20,78 +20,64 @@ import java.util.Objects;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final UserRepository repository;
 
     @Override
     public List<UserDto> getAllUsers() {
-        return userMapper.toDTOs(userRepository.getAllUsers());
+        List<User> users = repository.findAll();
+        return UserMapper.toDTOs(users);
     }
 
     @Override
-    public UserDto createUser(UserDto userDto) {
+    public UserDto saveUser(UserDto userDto) {
         checkEmail(userDto);
-        log.info("Пользователь успешно добавлен");
-        User user = userMapper.toUser(userDto);
-        checkEmailExistence(user);
-        user.setId(idGenerator());
-        user = userRepository.createUser(user);
-        return userMapper.toDTO(user);
+        User user = UserMapper.toUser(userDto);
+
+        return UserMapper.toDTO(repository.save(user));
     }
 
-
     @Override
-    public UserDto updateUser(UserDto userDto, Long id) {
-        log.info("Пользователь успешно обновлен");
-        User newUser = userMapper.toUser(userDto);
-        checkUserExistence(id);
-        newUser.setId(id);
-        UserDto user = findUserById(id);
-
-        if (!Objects.equals(newUser.getEmail(),user.getEmail())) {
-            checkEmailExistence(newUser);
-        }
-
-        if (StringUtils.isBlank(newUser.getEmail())) {
-            newUser.setEmail(user.getEmail());
-        }
-
-        if (StringUtils.isBlank(newUser.getName())) {
-            newUser.setName(user.getName());
-        }
-
-        newUser = userRepository.updateUser(newUser, id);
-        return userMapper.toDTO(newUser);
+    public UserDto getById(Long userId) {
+        checkUserExistence(userId);
+        User user = repository.getReferenceById(userId);
+        return UserMapper.toDTO(user);
     }
 
     @Override
     public UserDto removeUser(Long id) {
         checkUserExistence(id);
-        log.info("Пользователь успешно удален");
-        User user = userRepository.removeUser(id);
-        return userMapper.toDTO(user);
+        User user = repository.getReferenceById(id);
+        repository.deleteById(id);
+        return UserMapper.toDTO(user);
     }
 
     @Override
-    public UserDto findUserById(long id) {
-        log.info("Пользователь успешно найден по ID");
-        User user = userRepository.findUserById(id);
-        return userMapper.toDTO(user);
-    }
+    public UserDto updateUser(UserDto userDto, Long id) {
+        User newUser = UserMapper.toUser(userDto);
+        checkUserExistence(id);
+        newUser.setId(id);
+        User oldUser = repository.getReferenceById(id);
 
-    private void checkEmail(UserDto userDto) {
-        if (StringUtils.isBlank(userDto.getEmail())) {
-            throw new InvalidEmailException("Адрес электронной почты не может быть пустым.");
+        if (!Objects.equals(newUser.getEmail(),oldUser.getEmail())) {
+            checkEmailExistence(newUser);
         }
+
+        if (StringUtils.isBlank(newUser.getEmail())) {
+            newUser.setEmail(oldUser.getEmail());
+        }
+
+        if (StringUtils.isBlank(newUser.getName())) {
+            newUser.setName(oldUser.getName());
+        }
+
+        repository.save(newUser);
+        log.info("Пользователь успешно обновлен");
+        return UserMapper.toDTO(newUser);
     }
 
-    private long idGenerator() {
-        return IdentityGenerator.INSTANCE.generateId(User.class);
-    }
-
+    @Override
     public void checkEmailExistence(User user) {
-
-        for (User key: userRepository.getAllUsers()) {
+        for (User key: repository.findAll()) {
             if (Objects.equals(user.getEmail(), key.getEmail())) {
                 throw new UserAlreadyExistException(String.format(
                         "Пользователь с электронной почтой %s уже зарегистрирован.",
@@ -100,11 +86,16 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public void checkUserExistence(Long userId) {
-        if (Objects.isNull(userRepository.findUserById(userId))) {
-            throw new EntityNotFoundException(String.format(
-                    "Пользователь с id %s не зарегистрирован.",
-                    userId));
+    public void checkEmail(UserDto userDto) {
+        if (StringUtils.isBlank(userDto.getEmail())) {
+            throw new InvalidEmailException("Адрес электронной почты не может быть пустым.");
         }
+    }
+
+    @Override
+    public void checkUserExistence(Long userId) {
+        log.info("Поиск пользователя");
+        repository.findById(userId).orElseThrow(() -> new EntityNotFoundException(String.format(
+                "Пользователь с id %s не зарегистрирован.", userId)));
     }
 }

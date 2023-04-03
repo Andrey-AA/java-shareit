@@ -1,38 +1,69 @@
 package ru.practicum.shareit.booking.controller;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.service.BookingServiceImpl;
+import ru.practicum.shareit.booking.BookingState;
+import ru.practicum.shareit.booking.dto.BookingFromDomain;
+import ru.practicum.shareit.booking.dto.BookingShort;
+import ru.practicum.shareit.booking.service.BookingService;
+
 import javax.validation.Valid;
-import java.util.Collection;
+import java.util.List;
 
 @RestController
-@AllArgsConstructor
-@RequestMapping(path = "/bookings")
+@RequiredArgsConstructor
+@RequestMapping("/bookings")
 public class BookingController {
 
-    private final BookingServiceImpl bookingServiceImpl;
+    private static final String USER_ID = "X-Sharer-User-Id";
+    private final BookingService bookingService;
+
 
     @PostMapping
-    public BookingDto createBooking(@Valid @RequestBody BookingDto bookingDto) {
-        return bookingServiceImpl.createBooking(bookingDto);
-    }
-
-    @PatchMapping("/{bookingId}")
-    public BookingDto updateBooking(@Valid @RequestBody BookingDto bookingDto,
-                                    @RequestHeader("X-Sharer-User-Id") Long userId,
-                                    @PathVariable(value = "bookingId") Long bookingId) {
-        return bookingServiceImpl.updateBooking(bookingDto, userId, bookingId);
-    }
-
-    @GetMapping
-    public Collection<BookingDto> getAllItemRequests() {
-        return bookingServiceImpl.getAllBookings();
+    public BookingShort createBooking(@Valid @RequestBody BookingFromDomain bookingFromDomain,
+                                      @RequestHeader(USER_ID) Long bookerId) {
+        return bookingService.createBooking(bookingFromDomain, bookerId);
     }
 
     @GetMapping("/{id}")
-    public BookingDto findBookingById(@PathVariable(value = "id") Long id) {
-        return bookingServiceImpl.findBookingById(id);
+    public BookingShort findBookingById(@PathVariable(value = "id") Long bookingId, @RequestHeader(USER_ID) Long requesterId) {
+        return bookingService.findBookingById(bookingId, requesterId);
+    }
+
+    @PatchMapping("/{bookingId}")
+    public BookingShort approveBooking(@PathVariable Long bookingId,
+                                       @RequestParam Boolean approved,
+                                       @RequestHeader(USER_ID) Long requesterId) {
+        return bookingService.approveBooking(bookingId, approved, requesterId);
+    }
+
+    @PatchMapping("/cancel/{bookingId}")
+    public BookingShort cancelBooking(@PathVariable Long bookingId,
+                                      @RequestParam Boolean canceled,
+                                      @RequestHeader(USER_ID) Long requesterId) {
+        return bookingService.cancelBooking(bookingId, canceled, requesterId);
+    }
+
+    @GetMapping()
+    public List <BookingShort> findBookingsByUser(
+            @RequestParam(name = "state", required = false, defaultValue = "ALL") String state,
+            @RequestHeader(USER_ID) Long requesterId) {
+        BookingState bookingState = BookingState.checkState(state);
+        if (bookingState == null) {
+            throw new IllegalArgumentException("Unknown state: " + state);
+        }
+        return bookingService.findBookingsByUser(state, requesterId);
+    }
+
+
+    @GetMapping("/owner")
+    public List <BookingShort> findBookingsByOwner(
+            @RequestParam(name = "state", required = false, defaultValue = "ALL") String state,
+            @RequestHeader(USER_ID) Long requesterId) {
+        BookingState bookingState = BookingState.checkState(state);
+        if (bookingState == null) {
+            throw new IllegalArgumentException("Unknown state: " + state);
+        }
+        return bookingService.findBookingsByOwner(state, requesterId);
     }
 }
