@@ -57,7 +57,7 @@ public class BookingServiceImpl implements BookingService {
         userService.checkUserExistence(bookerId);
         log.info("Началась проверка корректности дат бронирования");
 
-        if((booking.getEnd().isBefore(LocalDateTime.now())) || (booking.getEnd().isBefore(booking.getStart()))
+        if ((booking.getEnd().isBefore(LocalDateTime.now())) || (booking.getEnd().isBefore(booking.getStart()))
                 || (booking.getStart().isBefore(LocalDateTime.now()))) {
             throw new ItemNotAvailableException("Указаны некорректные даты бронирования");
         }
