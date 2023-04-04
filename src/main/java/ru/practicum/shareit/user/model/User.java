@@ -9,7 +9,9 @@ import javax.validation.constraints.Email;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-@Getter @Setter @ToString
+@Getter
+@Setter
+@ToString
 
 public class User {
     @Id

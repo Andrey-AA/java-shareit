@@ -56,6 +56,7 @@ public class BookingServiceImpl implements BookingService {
         log.info("Началась проверка существования пользователей");
         userService.checkUserExistence(bookerId);
         log.info("Началась проверка корректности дат бронирования");
+
         if((booking.getEnd().isBefore(LocalDateTime.now())) || (booking.getEnd().isBefore(booking.getStart()))
                 || (booking.getStart().isBefore(LocalDateTime.now()))) {
             throw new ItemNotAvailableException("Указаны некорректные даты бронирования");
@@ -88,7 +89,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingShort findBookingById(Long bookingId, Long requesterId) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(()-> new EntityNotFoundException("Бронирование не найдено"));
+                .orElseThrow(() -> new EntityNotFoundException("Бронирование не найдено"));
         if ((Objects.equals(requesterId, booking.getBooker().getId()))
                 || (Objects.equals(requesterId, itemRepository.getReferenceById(
                         booking.getItem().getId()).getOwner()))) {
@@ -107,7 +108,7 @@ public class BookingServiceImpl implements BookingService {
         userService.checkUserExistence(requesterId);
 
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(()-> new EntityNotFoundException("Бронирование не найдено по ID"));
+                .orElseThrow(() -> new EntityNotFoundException("Бронирование не найдено по ID"));
 
         if (Objects.equals(requesterId, itemRepository.getReferenceById(booking.getItem().getId()).getOwner())) {
             log.info("Проверка на владельца вещи завершена успешно");
@@ -138,7 +139,7 @@ public class BookingServiceImpl implements BookingService {
         userService.checkUserExistence(requesterId);
 
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(()-> new EntityNotFoundException("Бронирование не найдено по ID"));
+                .orElseThrow(() -> new EntityNotFoundException("Бронирование не найдено по ID"));
 
         if (Objects.equals(requesterId, booking.getBooker().getId())) {
             log.info("Проверка на автора бронирвания завершена успешно");
@@ -157,7 +158,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List <BookingShort> findBookingsByUser(String state, Long requesterId) {
+    public List<BookingShort> findBookingsByUser(String state, Long requesterId) {
         log.info("Запрос на поиск бронирований пользователя");
         userService.checkUserExistence(requesterId);
         log.info("Провека на существование пользователя завершена успешно");
@@ -206,7 +207,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List <BookingShort> findBookingsByOwner(String state, Long requesterId) {
+    public List<BookingShort> findBookingsByOwner(String state, Long requesterId) {
         log.info("Запрос на поиск бронирований по владельцу");
         userService.checkUserExistence(requesterId);
         log.info("Провека на существование пользователя завершена успешно");

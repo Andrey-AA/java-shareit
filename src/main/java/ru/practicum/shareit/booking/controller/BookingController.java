@@ -45,7 +45,7 @@ public class BookingController {
     }
 
     @GetMapping()
-    public List <BookingShort> findBookingsByUser(
+    public List<BookingShort> findBookingsByUser(
             @RequestParam(name = "state", required = false, defaultValue = "ALL") String state,
             @RequestHeader(USER_ID) Long requesterId) {
         BookingState bookingState = BookingState.checkState(state);
@@ -57,7 +57,7 @@ public class BookingController {
 
 
     @GetMapping("/owner")
-    public List <BookingShort> findBookingsByOwner(
+    public List<BookingShort> findBookingsByOwner(
             @RequestParam(name = "state", required = false, defaultValue = "ALL") String state,
             @RequestHeader(USER_ID) Long requesterId) {
         BookingState bookingState = BookingState.checkState(state);
