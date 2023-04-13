@@ -58,7 +58,7 @@ public class BookingServiceImpl implements BookingService {
         log.info("Началась проверка корректности дат бронирования");
 
         if ((booking.getEnd().isBefore(LocalDateTime.now())) || (booking.getEnd().isBefore(booking.getStart()))
-                || (booking.getStart().isBefore(LocalDateTime.now()))) {
+                || (booking.getStart().isBefore(LocalDateTime.now())) || (booking.getEnd().equals(booking.getStart()))) {
             throw new ItemNotAvailableException("Указаны некорректные даты бронирования");
         }
 
@@ -186,7 +186,7 @@ public class BookingServiceImpl implements BookingService {
             }
             case CURRENT: {
                 log.info("Статус 'CURRENT'");
-                userBookings = bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(
+                userBookings = bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartAsc(
                         requesterId, now, now);
                 break;
             }
