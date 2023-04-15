@@ -35,10 +35,10 @@ public class ItemLong {
         private final long bookerId;
     }
 
-   /* @Data
+    @Data
     public static class Comment {
         private final long id;
         private final String text;
-    }*/
+    }
 }
 

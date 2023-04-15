@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS items (
     description VARCHAR(5000) NOT NULL,
     available BOOLEAN,
     owner BIGINT REFERENCES users(id),
-    request BIGINT,
+    request BIGINT REFERENCES requests (id),
     CONSTRAINT pk_item PRIMARY KEY (id),
     CONSTRAINT fk_owner FOREIGN KEY (owner) REFERENCES users (id)
     );
