@@ -1,6 +1,10 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import ru.practicum.shareit.item.model.Comment;
 
 import java.util.List;
 
@@ -17,8 +21,7 @@ public class ItemLong {
     private Long request;
     private LastBooking lastBooking;
     private NextBooking nextBooking;
-    @ToString.Exclude
-    private List<CommentDto> comments;
+    private List<Comment> comments;
 
     @Data
     public static class LastBooking {
