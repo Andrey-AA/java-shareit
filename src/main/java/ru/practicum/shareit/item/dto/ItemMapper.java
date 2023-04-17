@@ -49,7 +49,7 @@ public class ItemMapper {
     public static ItemLong toItemLong(@NonNull Item item,
                                       Booking lastBooking,
                                       Booking nextBooking,
-                                      List<Comment> comments) {
+                                      List<CommentDto> comments) {
         return new ItemLong(
                 item.getId(),
                 item.getName(),
@@ -69,7 +69,7 @@ public class ItemMapper {
         );
     }
 
-    public static ItemLong toLong(Item item, List<Booking> bookings, List<Comment> comments) {
+    public static ItemLong toLong(Item item, List<Booking> bookings, List<CommentDto> comments) {
         LocalDateTime now = LocalDateTime.now();
         Booking lastBooking = null;
         Booking nextBooking = null;
