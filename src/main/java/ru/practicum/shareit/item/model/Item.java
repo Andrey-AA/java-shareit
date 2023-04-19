@@ -26,7 +26,7 @@ public class Item {
     @Column(name = "available")
     private Boolean available;
 
-    @JoinColumn (name = "owner", nullable = false)
+    @JoinColumn(name = "owner", nullable = false)
     private Long owner;
 
     @Column(name = "request")

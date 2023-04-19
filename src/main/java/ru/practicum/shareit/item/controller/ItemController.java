@@ -22,11 +22,11 @@ public class ItemController {
 
     @PostMapping
     public ItemDto createItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader(OWNER_ID) Long ownerId) {
-        return itemService.saveItem(itemDto,ownerId);
+        return itemService.saveItem(itemDto, ownerId);
     }
 
-    @GetMapping ("/{id}")
-    public ItemLong findItemById(@PathVariable(value = "id") Long id,  @RequestHeader(OWNER_ID) Long requesterId) {
+    @GetMapping("/{id}")
+    public ItemLong findItemById(@PathVariable(value = "id") Long id, @RequestHeader(OWNER_ID) Long requesterId) {
         return itemService.getItemById(id, requesterId);
     }
 
@@ -49,8 +49,8 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentDto saveComment(@Valid @RequestBody CommentDto commentDto,
-                              @RequestHeader(OWNER_ID) Long requesterId,
-                              @PathVariable(value = "itemId") Long itemId) {
+                                  @RequestHeader(OWNER_ID) Long requesterId,
+                                  @PathVariable(value = "itemId") Long itemId) {
         return itemService.saveComment(commentDto, requesterId, itemId);
     }
 }
