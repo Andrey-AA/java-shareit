@@ -27,8 +27,8 @@ public class Comment {
     @JoinColumn(name = "item_id", nullable = false)
     private Long itemId;
 
-    @JoinColumn(name = "author_name", nullable = false)
-    private String authorName;
+    @JoinColumn(name = "author_id", nullable = false)
+    private Long authorId;
 
     @Column(name = "created", nullable = false)
     private LocalDateTime created;

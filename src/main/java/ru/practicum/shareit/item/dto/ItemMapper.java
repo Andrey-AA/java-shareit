@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -49,7 +51,7 @@ public class ItemMapper {
     public static ItemLong toItemLong(@NonNull Item item,
                                       Booking lastBooking,
                                       Booking nextBooking,
-                                      List<Comment> comments) {
+                                      List<CommentDto> comments) {
         return new ItemLong(
                 item.getId(),
                 item.getName(),
@@ -69,7 +71,7 @@ public class ItemMapper {
         );
     }
 
-    public static ItemLong toLong(Item item, List<Booking> bookings, List<Comment> comments) {
+    public static ItemLong toLong(Item item, List<Booking> bookings, List<CommentDto> comments) {
         LocalDateTime now = LocalDateTime.now();
         Booking lastBooking = null;
         Booking nextBooking = null;
@@ -89,12 +91,15 @@ public class ItemMapper {
         return toItemLong(item, lastBooking, nextBooking, comments);
     }
 
-    public static CommentDto toCommentDto(@NonNull Comment comment) {
+    public static CommentDto toCommentDto(@NonNull Comment comment, @NonNull UserRepository userRepository) {
+        String authorName = userRepository.findNameById(comment.getAuthorId());
+
         return new CommentDto(
                 comment.getId(),
                 comment.getText(),
                 comment.getItemId(),
-                comment.getAuthorName(),
+                authorName,
+                comment.getAuthorId(),
                 comment.getCreated()
         );
     }
@@ -104,17 +109,9 @@ public class ItemMapper {
                 commentDto.getId(),
                 commentDto.getText(),
                 commentDto.getItemId(),
-                commentDto.getAuthorName(),
+                commentDto.getAuthorId(),
                 commentDto.getCreated()
         );
     }
 
-    public static List<CommentDto> toCommentDTOs(List<Comment> comments) {
-        ArrayList<CommentDto> commentsDto = new ArrayList<>();
-
-        for (Comment comment : comments) {
-            commentsDto.add(toCommentDto(comment));
-        }
-        return commentsDto;
-    }
 }

@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -79,7 +80,10 @@ public class ItemServiceImpl implements ItemService {
         }
 
         List<Comment> comments = commentRepository.findAll();
-        return ItemMapper.toItemLong(item, lastBooking, nextBooking, comments);
+        List<CommentDto> commentDtoList = comments.stream()
+                .map(comment -> ItemMapper.toCommentDto(comment, userRepository))
+                .collect(Collectors.toList());
+        return ItemMapper.toItemLong(item, lastBooking, nextBooking, commentDtoList);
     }
 
     @Override
@@ -192,11 +196,12 @@ public class ItemServiceImpl implements ItemService {
             throw new InvalidItemParametersException("Отсутствуют букинги у данного пользователя");
         }
 
-        commentDto.setAuthorName(userRepository.getReferenceById(requesterId).getName());
+        commentDto.setAuthorId(requesterId);
         commentDto.setItemId(itemId);
         commentDto.setCreated(LocalDateTime.now());
         Comment comment = ItemMapper.toComment(commentDto);
         commentRepository.save(comment);
-        return ItemMapper.toCommentDto(comment);
+
+        return ItemMapper.toCommentDto(comment, userRepository);
     }
 }

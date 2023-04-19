@@ -21,7 +21,7 @@ public class ItemLong {
     private Long request;
     private LastBooking lastBooking;
     private NextBooking nextBooking;
-    private List<Comment> comments;
+    private List<CommentDto> comments;
 
     @Data
     public static class LastBooking {
