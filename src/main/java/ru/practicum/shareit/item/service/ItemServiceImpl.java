@@ -91,12 +91,17 @@ public class ItemServiceImpl implements ItemService {
         List<ItemLong> result = new ArrayList<>();
         log.info("Начался поиск вещей по ID владельца");
         List<Item> userItems = itemRepository.findAllByOwner(ownerId);
+
+        List<Long> itemIds = userItems.stream().map(Item::getId).collect(Collectors.toList());
+        List<Booking> itemBookings = bookingRepository.findAllByItemIdIn(itemIds);
+
         for (Item item : userItems) {
-            List<Booking> itemBookings = bookingRepository.findAllByItemId(item.getId());
-            result.add(
-                    ItemMapper.toLong(item, itemBookings, new ArrayList<>())
-            );
+            List<Booking> bookings = itemBookings.stream()
+                    .filter(booking -> Objects.equals(booking.getItem().getId(), item.getId()))
+                    .collect(Collectors.toList());
+            result.add(ItemMapper.toLong(item, bookings, new ArrayList<>()));
         }
+
         log.info("Вещи успешно найдены по ID владельца");
         return result;
     }

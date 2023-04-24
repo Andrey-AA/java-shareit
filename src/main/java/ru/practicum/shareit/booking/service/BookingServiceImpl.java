@@ -119,7 +119,7 @@ public class BookingServiceImpl implements BookingService {
         log.info("Проверка текущего статуса");
 
         if (approved) {
-            if (Objects.equals(booking.getStatus(), BookingStatus.APPROVED)) {
+            if (booking.getStatus() == BookingStatus.APPROVED) {
                 throw new InvalidItemParametersException("Статус бронирования уже подтвержден");
             }
          booking.setStatus(BookingStatus.APPROVED);
@@ -166,38 +166,29 @@ public class BookingServiceImpl implements BookingService {
 
         List<Booking> userBookings = new ArrayList<>();
 
+        log.info(String.format("Статус %s", BookingState.valueOf(state)));
         switch (BookingState.valueOf(state)) {
             case ALL: {
-                log.info("Статус 'ALL'");
                 userBookings = bookingRepository.findBookingsByUser(requesterId);
                 break;
             }
-            case WAITING: {
-                log.info("Статус 'WAITING'");
-                userBookings = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(
-                        requesterId,BookingStatus.valueOf(state));
-                break;
-            }
+            case WAITING:
             case REJECTED: {
-                log.info("Статус 'REJECTED'");
                 userBookings = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(
                         requesterId,BookingStatus.valueOf(state));
                 break;
             }
             case CURRENT: {
-                log.info("Статус 'CURRENT'");
                 userBookings = bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartAsc(
                         requesterId, now, now);
                 break;
             }
             case FUTURE: {
-                log.info("Статус 'FUTURE'");
                 userBookings = bookingRepository.findAllByBookerAndStartGreaterThanOrderByIdDesc(
                         userRepository.getReferenceById(requesterId).getId(), now);
                 break;
             }
             case PAST: {
-                log.info("Статус 'PAST'");
                 userBookings = bookingRepository.findAllByBookerIdAndEndBeforeAndStatusOrderByStartDesc(
                         requesterId, now, BookingStatus.APPROVED);
                 break;
@@ -213,37 +204,29 @@ public class BookingServiceImpl implements BookingService {
         log.info("Провека на существование пользователя завершена успешно");
         List<Booking> ownerBookings = new ArrayList<>();
         final LocalDateTime now = LocalDateTime.now();
+
+        log.info(String.format("Статус  %s", BookingState.valueOf(state)));
         switch (BookingState.valueOf(state)) {
             case ALL: {
-                log.info("Статус 'ALL'");
                 ownerBookings = bookingRepository.findAllByItemOwnerOrderByStartDesc(requesterId);
                 break;
             }
             case FUTURE: {
-                log.info("Статус 'FUTURE'");
                 ownerBookings = bookingRepository.findAllByItemOwnerAndStartGreaterThanOrderByStartDesc(
                         requesterId, now);
                 break;
             }
             case PAST: {
-                log.info("Статус 'PAST'");
                 ownerBookings = bookingRepository.findAllByItemOwnerAndEndBeforeOrderByStartDesc(requesterId, now);
                 break;
             }
             case CURRENT: {
-                log.info("Статус 'CURRENT'");
                 ownerBookings = bookingRepository.findAllByItemOwnerAndStartBeforeAndEndAfterOrderByStartDesc(
                         requesterId, now, now);
                 break;
             }
-            case WAITING: {
-                log.info("Статус 'WAITING'");
-                ownerBookings = bookingRepository.findAllByItemOwnerAndStatusOrderByStartDesc(
-                        requesterId,BookingStatus.valueOf(state));
-                break;
-            }
+            case WAITING:
             case REJECTED: {
-                log.info("Статус 'REJECTED'");
                 ownerBookings = bookingRepository.findAllByItemOwnerAndStatusOrderByStartDesc(
                         requesterId,BookingStatus.valueOf(state));
                 break;

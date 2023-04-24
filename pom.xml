@@ -20,6 +20,8 @@
 		<maven-checkstyle.version>3.1.2</maven-checkstyle.version>
 		<puppycrawl-checkstyle.version>10.7.0</puppycrawl-checkstyle.version>
 		<jacoco.version>0.8.8</jacoco.version>
+		<apache.version>3.12.0</apache.version>
+		<codehaus.version>3.0.0</codehaus.version>
 	</properties>
 
 	<dependencies>
@@ -72,7 +74,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.12.0</version>
+			<version>${apache.version}</version>
 		</dependency>
 
 		<dependency>
@@ -106,7 +108,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>${codehaus.version}</version>
 				<executions>
 					<execution>
 						<id>add-source</id>

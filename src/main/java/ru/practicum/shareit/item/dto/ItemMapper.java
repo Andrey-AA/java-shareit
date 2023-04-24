@@ -1,8 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
@@ -12,8 +10,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
-@Slf4j
 public class ItemMapper {
 
     public static Item toItem(@NonNull ItemDto itemDto) {

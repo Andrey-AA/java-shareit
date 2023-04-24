@@ -3,8 +3,6 @@ package ru.practicum.shareit.item.model;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -19,8 +17,6 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @NotEmpty
     @Column(name = "text", nullable = false)
     private String text;
 

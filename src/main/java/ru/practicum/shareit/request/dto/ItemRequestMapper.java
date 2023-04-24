@@ -1,14 +1,11 @@
 package ru.practicum.shareit.request.dto;
 
 import lombok.NonNull;
-import org.springframework.stereotype.Component;
 import ru.practicum.shareit.request.model.ItemRequest;
-
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 public class ItemRequestMapper {
 
     public static ItemRequest toItemRequest(@NonNull ItemRequestDto itemRequestDto) {

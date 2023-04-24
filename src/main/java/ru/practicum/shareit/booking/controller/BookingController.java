@@ -44,26 +44,23 @@ public class BookingController {
         return bookingService.cancelBooking(bookingId, canceled, requesterId);
     }
 
-    @GetMapping()
+    @GetMapping
     public List<BookingShort> findBookingsByUser(
             @RequestParam(name = "state", required = false, defaultValue = "ALL") String state,
             @RequestHeader(USER_ID) Long requesterId) {
-        BookingState bookingState = BookingState.checkState(state);
+        BookingState.checkState(state);
+        /*BookingState bookingState = BookingState.checkState(state);
         if (bookingState == null) {
             throw new IllegalArgumentException("Unknown state: " + state);
-        }
+        }*/
         return bookingService.findBookingsByUser(state, requesterId);
     }
-
 
     @GetMapping("/owner")
     public List<BookingShort> findBookingsByOwner(
             @RequestParam(name = "state", required = false, defaultValue = "ALL") String state,
             @RequestHeader(USER_ID) Long requesterId) {
-        BookingState bookingState = BookingState.checkState(state);
-        if (bookingState == null) {
-            throw new IllegalArgumentException("Unknown state: " + state);
-        }
-        return bookingService.findBookingsByOwner(state, requesterId);
+       BookingState.checkState(state);
+       return bookingService.findBookingsByOwner(state, requesterId);
     }
 }
