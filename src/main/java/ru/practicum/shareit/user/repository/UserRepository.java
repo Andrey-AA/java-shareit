@@ -1,18 +1,12 @@
 package ru.practicum.shareit.user.repository;
 
-import ru.practicum.shareit.user.repository.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import ru.practicum.shareit.user.model.User;
 
-import java.util.List;
+public interface UserRepository extends JpaRepository<User, Long> {
 
-public interface UserRepository {
-
-    List<User> getAllUsers();
-
-    User createUser(User user);
-
-    User updateUser(User user, Long id);
-
-    User removeUser(Long id);
-
-    User findUserById(long id);
+    @Query("SELECT u.name FROM User u WHERE u.id = :userId")
+    String findNameById(@Param("userId") Long userId);
 }

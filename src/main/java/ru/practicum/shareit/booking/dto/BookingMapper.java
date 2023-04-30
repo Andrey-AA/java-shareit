@@ -1,43 +1,69 @@
 package ru.practicum.shareit.booking.dto;
 
 import lombok.NonNull;
-import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
+
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 public class BookingMapper {
 
-    public Booking toBooking(@NonNull BookingDto bookingDto) {
+    public static Booking toBooking(@NonNull BookingFromDomain bookingFromDomain, Item item, User user) {
         return new Booking(
-                bookingDto.getId(),
-                bookingDto.getStart(),
-                bookingDto.getEnd(),
-                bookingDto.getItem(),
-                bookingDto.getBooker(),
-                bookingDto.getStatus()
+                bookingFromDomain.getId(),
+                bookingFromDomain.getStart(),
+                bookingFromDomain.getEnd(),
+                item,
+                user,
+                bookingFromDomain.getStatus()
         );
     }
 
-    public BookingDto toDto(@NonNull Booking booking) {
-        return new BookingDto(
+    public static BookingFromDomain toBookingFromDomain(@NonNull Booking booking) {
+        return new BookingFromDomain(
                 booking.getId(),
                 booking.getStart(),
                 booking.getEnd(),
-                booking.getItem(),
-                booking.getBooker(),
+                booking.getItem().getId(),
+                booking.getBooker().getId(),
                 booking.getStatus()
         );
     }
 
-    public List<BookingDto> toDTOs(List<Booking> bookings) {
-        ArrayList<BookingDto> bookingsDto = new ArrayList<>();
+    public static List<BookingFromDomain> toBookingFromDomains(List<Booking> bookings) {
+        ArrayList<BookingFromDomain> bookingsDto = new ArrayList<>();
 
         for (Booking booking: bookings) {
-            bookingsDto.add(toDto(booking));
+            bookingsDto.add(toBookingFromDomain(booking));
         }
-
         return bookingsDto;
+    }
+
+    public static BookingShort toBookingShort(@NonNull Booking booking) {
+        return new BookingShort(
+                booking.getId(),
+                booking.getStart(),
+                booking.getEnd(),
+                new BookingShort.Booker(
+                        booking.getBooker().getId(),
+                        booking.getBooker().getName()
+                ),
+                new BookingShort.Item(
+                        booking.getItem().getId(),
+                        booking.getItem().getName()
+                ),
+                booking.getStatus()
+        );
+    }
+
+    public static List<BookingShort> toBookingShorts(List<Booking> bookings) {
+        ArrayList<BookingShort> bookingShorts = new ArrayList<>();
+
+        for (Booking booking: bookings) {
+            bookingShorts.add(toBookingShort(booking));
+        }
+        return bookingShorts;
     }
 }

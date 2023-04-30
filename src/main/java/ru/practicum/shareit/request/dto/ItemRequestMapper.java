@@ -1,35 +1,32 @@
 package ru.practicum.shareit.request.dto;
 
 import lombok.NonNull;
-import org.springframework.stereotype.Component;
 import ru.practicum.shareit.request.model.ItemRequest;
-
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 public class ItemRequestMapper {
 
-    public ItemRequest toItemRequest(@NonNull ItemRequestDto itemRequestDto) {
+    public static ItemRequest toItemRequest(@NonNull ItemRequestDto itemRequestDto) {
         return new ItemRequest(
                 itemRequestDto.getId(),
                 itemRequestDto.getDescription(),
-                itemRequestDto.getRequester(),
+                itemRequestDto.getRequesterId(),
                 itemRequestDto.getCreated()
         );
     }
 
-    public ItemRequestDto toDto(@NonNull ItemRequest itemRequest) {
+    public static ItemRequestDto toDto(@NonNull ItemRequest itemRequest) {
         return new ItemRequestDto(
                 itemRequest.getId(),
                 itemRequest.getDescription(),
-                itemRequest.getRequester(),
+                itemRequest.getRequesterId(),
                 itemRequest.getCreated()
         );
     }
 
-    public List<ItemRequestDto> toDTOs(List<ItemRequest> itemRequests) {
+    public static List<ItemRequestDto> toDTOs(List<ItemRequest> itemRequests) {
         ArrayList<ItemRequestDto> itemRequestsDto = new ArrayList<>();
 
         for (ItemRequest itemRequest: itemRequests) {
