@@ -1,6 +1,8 @@
 package ru.practicum.shareit.request.dto;
 
 import lombok.NonNull;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.ArrayList;
@@ -34,4 +36,30 @@ public class ItemRequestMapper {
         }
         return itemRequestsDto;
     }
+
+    public static ItemRequestFull toItemRequestFull(@NonNull ItemRequest itemRequest, List<Item> items) {
+        return new ItemRequestFull(
+                itemRequest.getId(),
+                itemRequest.getDescription(),
+                itemRequest.getRequesterId(),
+                itemRequest.getCreated(),
+                items
+        );
+    }
+
+    public static List<ItemRequestFull> toFulls(@NonNull List<ItemRequest> itemRequests, ItemRepository itemRepository) {
+        List<ItemRequestFull> itemRequestFulls = new ArrayList<>();
+
+        for (ItemRequest itemRequest : itemRequests) {
+            List<Item> items = itemRepository.findAllByRequestId(itemRequest.getRequesterId());
+            itemRequestFulls.add(ItemRequestMapper.toItemRequestFull(itemRequest,items));
+        }
+
+        return itemRequestFulls;
+    }
+
+
+
+
+
 }

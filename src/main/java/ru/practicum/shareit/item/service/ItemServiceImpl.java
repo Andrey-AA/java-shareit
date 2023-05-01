@@ -52,7 +52,7 @@ public class ItemServiceImpl implements ItemService {
         for (ItemRequestDto itemRequestDto : requests) {
 
             if (itemRequestDto.getDescription().equalsIgnoreCase(itemDto.getName())) {
-                itemDto.setRequest(itemRequestDto.getId());
+                itemDto.setRequestId(itemRequestDto.getId());
             }
         }
 
@@ -137,7 +137,7 @@ public class ItemServiceImpl implements ItemService {
         }
 
         if (StringUtils.isBlank(newItem.getName())) {
-            newItem.setRequest(item.getRequest());
+            newItem.setRequestId(item.getRequestId());
         }
 
         if (!Objects.equals(newItem.getOwner(), ownerId)) {
