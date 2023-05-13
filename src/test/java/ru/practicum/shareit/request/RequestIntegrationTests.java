@@ -145,12 +145,10 @@ class RequestIntegrationTests {
     void getItemRequestByWrongIdTest() {
         assertThrows(EntityNotFoundException.class, () -> itemRequestService.getItemRequestById(1L,99L));
     }
-    
+
     @Test
     @Rollback
     void getItemRequestByNullIdTest() {
         assertThrows(EntityNotFoundException.class, () -> itemRequestService.getItemRequestById(1L,null));
     }
-
-
 }
