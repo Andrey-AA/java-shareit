@@ -11,6 +11,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
@@ -45,6 +46,8 @@ class RequestIntegrationTests {
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    private ItemRepository itemRepository;
 
     @Test
     @Rollback
@@ -70,6 +73,7 @@ class RequestIntegrationTests {
         ItemRequest itemRequest2 = new ItemRequest(2L,"description2",1L,LocalDateTime.now().minusDays(5));
         ItemRequest itemRequest3 = new ItemRequest(3L,"description3",1L,LocalDateTime.now().minusDays(5));
         userRepository.save(user);
+        itemRequestRepository.deleteAll();
         itemRequestRepository.save(itemRequest);
         itemRequestRepository.save(itemRequest2);
         itemRequestRepository.save(itemRequest3);
@@ -91,6 +95,7 @@ class RequestIntegrationTests {
         ItemRequest itemRequest2 = new ItemRequest(2L,"description2",1L,LocalDateTime.now().minusDays(5));
         ItemRequest itemRequest3 = new ItemRequest(3L,"description3",1L,LocalDateTime.now().minusDays(5));
         userRepository.save(user);
+        itemRequestRepository.deleteAll();
         itemRequestRepository.save(itemRequest);
         itemRequestRepository.save(itemRequest2);
         itemRequestRepository.save(itemRequest3);
