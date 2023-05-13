@@ -6,7 +6,6 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.dto.ItemRequestFull;
 import ru.practicum.shareit.request.dto.UserDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 
@@ -67,11 +66,5 @@ class RequestJsonTests {
         ItemRequest itemRequest3 = new ItemRequest(1L,"description2",1L, LocalDateTime.now());
         assertEquals(itemRequest1, itemRequest2);
         assertEquals(itemRequest1, itemRequest3);
-
-        ItemRequestFull itemRequestFull1 = new ItemRequestFull(1L,"description",1L, LocalDateTime.now(),null);
-        ItemRequestFull itemRequestFull2 = new ItemRequestFull(1L,"description",1L, LocalDateTime.now(),null);
-        ItemRequestFull itemRequestFull3 = new ItemRequestFull(1L,"description2",1L, LocalDateTime.now(),null);
-        assertEquals(itemRequestFull1, itemRequestFull2);
-        assertEquals(itemRequestFull1, itemRequestFull3);
     }
 }
