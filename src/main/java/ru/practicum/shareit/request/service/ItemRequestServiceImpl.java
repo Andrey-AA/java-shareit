@@ -28,7 +28,6 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ItemRequestServiceImpl implements ItemRequestService {
     private final BookingRepository bookingRepository;
-
     private final ItemRequestRepository itemRequestRepository;
     private final ItemRepository itemRepository;
     private final UserService userService;
