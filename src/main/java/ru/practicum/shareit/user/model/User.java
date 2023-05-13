@@ -12,7 +12,7 @@ import javax.validation.constraints.Email;
 @Getter
 @Setter
 @ToString
-
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

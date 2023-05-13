@@ -20,7 +20,7 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PostMapping
+    @PostMapping()
     public UserDto saveUser(@Valid @RequestBody UserDto userDto) {
         return userService.saveUser(userDto);
     }
@@ -39,5 +39,4 @@ public class UserController {
     public UserDto updateUser(@Valid @RequestBody UserDto userDto, @PathVariable(value = "id") Long id) {
         return userService.updateUser(userDto, id);
     }
-
 }

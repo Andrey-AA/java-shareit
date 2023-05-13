@@ -4,6 +4,7 @@ import lombok.NonNull;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.model.ItemRequestFull;
 
 import java.util.ArrayList;
 import java.util.List;

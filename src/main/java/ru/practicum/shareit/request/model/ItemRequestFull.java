@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request.dto;
+package ru.practicum.shareit.request.model;
 
 import lombok.*;
 import ru.practicum.shareit.item.model.Item;
@@ -11,6 +11,7 @@ import java.util.List;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ItemRequestFull {
     private Long id;
     private String description;

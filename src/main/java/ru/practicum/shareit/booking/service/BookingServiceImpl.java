@@ -160,6 +160,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingShort> findBookingsByUser(String state, Long requesterId, Integer from, Integer size) {
+        state = BookingState.valueOf(state).name();
         log.info("Запрос на поиск бронирований пользователя");
         userService.checkUserExistence(requesterId);
         log.info("Провека на существование пользователя завершена успешно");
@@ -170,31 +171,28 @@ public class BookingServiceImpl implements BookingService {
 
         log.info(String.format("Статус %s", BookingState.valueOf(state)));
         switch (BookingState.valueOf(state)) {
-            case ALL: {
+            case ALL:
                 userBookings = bookingRepository.findBookingsByUser(requesterId, pageable);
                 break;
-            }
             case WAITING:
-            case REJECTED: {
+            case REJECTED:
                 userBookings = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(
                         requesterId,BookingStatus.valueOf(state), pageable);
                 break;
-            }
-            case CURRENT: {
+            case CURRENT:
                 userBookings = bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartAsc(
                         requesterId, now, now, pageable);
                 break;
-            }
-            case FUTURE: {
+            case FUTURE:
                 userBookings = bookingRepository.findAllByBookerAndStartGreaterThanOrderByIdDesc(
                         userRepository.getReferenceById(requesterId).getId(), now, pageable);
                 break;
-            }
-            case PAST: {
+            case PAST:
                 userBookings = bookingRepository.findAllByBookerIdAndEndBeforeAndStatusOrderByStartDesc(
                         requesterId, now, BookingStatus.APPROVED, pageable);
                 break;
-            }
+            default:
+                throw new InvalidItemParametersException("Unknown state666: " + state);
         }
         return BookingMapper.toBookingShorts(userBookings);
     }

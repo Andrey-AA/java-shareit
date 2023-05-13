@@ -44,7 +44,7 @@ public class BookingController {
         return bookingService.cancelBooking(bookingId, canceled, requesterId);
     }
 
-    @GetMapping
+    @GetMapping()
     public List<BookingShort> findBookingsByUser(
             @RequestParam(name = "state", required = false, defaultValue = "ALL") String state,
             @RequestHeader(USER_ID) Long requesterId,
