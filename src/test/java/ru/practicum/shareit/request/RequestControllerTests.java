@@ -45,7 +45,7 @@ class RequestControllerTests {
     }
 
     @Test
-    void getItemRequestByUserIdTest () throws Exception {
+    void getItemRequestByUserIdTest() throws Exception {
         ItemRequestFull itemRequestFull = new ItemRequestFull(1L,"description",1L,LocalDateTime.now(),null);
         ItemRequestFull itemRequestFull2 = new ItemRequestFull(2L,"description2",1L,LocalDateTime.now(),null);
         ItemRequestFull itemRequestFull3 = new ItemRequestFull(3L,"description3",1L,LocalDateTime.now(),null);
@@ -59,7 +59,7 @@ class RequestControllerTests {
     }
 
     @Test
-    void getAllItemRequestsTest () throws Exception {
+    void getAllItemRequestsTest() throws Exception {
         ItemRequestFull itemRequestFull = new ItemRequestFull(1L,"description",1L,LocalDateTime.now(),null);
         ItemRequestFull itemRequestFull2 = new ItemRequestFull(2L,"description2",1L,LocalDateTime.now(),null);
         ItemRequestFull itemRequestFull3 = new ItemRequestFull(3L,"description3",1L,LocalDateTime.now(),null);

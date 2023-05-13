@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -21,13 +20,6 @@ class UserRepositoryTests {
 
     @Autowired
     UserRepository userRepository;
-
-   // private User user;
-
-   /* @BeforeEach
-    void init() {
-        user = new User(1L,"name","email@mail.com");
-    }*/
 
     @Test
     void findAllUsersTest() {
@@ -66,7 +58,7 @@ class UserRepositoryTests {
     }
 
     @Test
-    void findNameByIdTest () {
+    void findNameByIdTest() {
         User user = userRepository.save(new User(1L,"name","email@mail.com"));
         User user1 = userRepository.findById(user.getId()).get();
         Assertions.assertNotNull(user1);

@@ -64,7 +64,7 @@ class RequestIntegrationTests {
 
     @Test
     @Rollback
-    void getItemRequestByUserIdTest () throws Exception {
+    void getItemRequestByUserIdTest() throws Exception {
         User user = new User(1L, "name","email@mail.ru");
         ItemRequest itemRequest = new ItemRequest(1L,"description",1L,LocalDateTime.now().minusDays(5));
         ItemRequest itemRequest2 = new ItemRequest(2L,"description2",1L,LocalDateTime.now().minusDays(5));
@@ -85,7 +85,7 @@ class RequestIntegrationTests {
 
     @Test
     @Rollback
-    void getAllItemRequestsTest () throws Exception {
+    void getAllItemRequestsTest() throws Exception {
         User user = new User(1L, "name","email@mail.ru");
         ItemRequest itemRequest = new ItemRequest(1L,"description",1L,LocalDateTime.now().minusDays(5));
         ItemRequest itemRequest2 = new ItemRequest(2L,"description2",1L,LocalDateTime.now().minusDays(5));

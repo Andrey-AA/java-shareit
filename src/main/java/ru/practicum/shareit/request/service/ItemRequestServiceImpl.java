@@ -54,8 +54,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         userService.checkUserExistence(requesterId);
         log.info("Пагинация");
         Pageable pageable = PageRequest.of(from / size, size);
-        List<ItemRequest> itemRequests = itemRequestRepository.
-                getItemRequestByRequesterIdIsNotOrderByCreated(requesterId, pageable);
+        List<ItemRequest> itemRequests = itemRequestRepository
+                .getItemRequestByRequesterIdIsNotOrderByCreated(requesterId, pageable);
         return ItemRequestMapper.toFulls(itemRequests, itemRepository);
     }
 

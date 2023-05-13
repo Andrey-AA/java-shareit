@@ -146,6 +146,7 @@ class ItemRepositoryTests {
         assertThat(resultList).isNotEmpty();
         Assertions.assertEquals(item.getId(),resultList.get(0).getId());
     }
+
     @Test
     void findAllByRequestId() {
         Item item = Item
