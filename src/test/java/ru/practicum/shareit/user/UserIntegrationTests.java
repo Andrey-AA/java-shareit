@@ -58,8 +58,9 @@ class UserIntegrationTests {
     @Test
     @Rollback
     void saveUserWithIncorrectEmailTest() throws Exception {
-        UserDto invalidMailUser = new UserDto(1L, "name","","dto");
-        assertThrows(InvalidEmailException.class, () -> userService.saveUser(invalidMailUser));
+       userRepository.deleteAll();
+       UserDto invalidMailUser = new UserDto(1L, "name","","dto");
+       assertThrows(InvalidEmailException.class, () -> userService.saveUser(invalidMailUser));
     }
 
     @Test

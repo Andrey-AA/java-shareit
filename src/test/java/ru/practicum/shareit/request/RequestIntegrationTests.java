@@ -11,10 +11,11 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.exception.InvalidItemParametersException;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
+import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -46,8 +48,9 @@ class RequestIntegrationTests {
 
     @Autowired
     UserRepository userRepository;
+
     @Autowired
-    private ItemRepository itemRepository;
+    ItemRequestService itemRequestService;
 
     @Test
     @Rollback
@@ -63,6 +66,15 @@ class RequestIntegrationTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(itemRequestDto))).andExpect(status().isOk())
                 .andExpect(jsonPath("$.description").value("description"));
+    }
+
+    @Test
+    @Rollback
+    void createRequestWithoutDescriptionTest() throws Exception {
+        User user = new User(1L, "name","email@mail.ru");
+        ItemRequestDto itemRequestDto = new ItemRequestDto(1L,"",1L,LocalDateTime.now().minusDays(5));
+        userRepository.save(user);
+        assertThrows(InvalidItemParametersException.class, () -> itemRequestService.saveItemRequest(1L,itemRequestDto));
     }
 
     @Test

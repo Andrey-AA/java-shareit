@@ -7,8 +7,14 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemLong;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.dto.ItemRequestFull;
+import ru.practicum.shareit.request.model.ItemRequest;
+
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @JsonTest
 class ItemJsonTests {
@@ -54,5 +60,21 @@ class ItemJsonTests {
                 .isEqualTo("name");
         assertThat(result).extractingJsonPathStringValue("$.description")
                 .isEqualTo("description");
+    }
+
+    @Test
+    void hashCodeTest() {
+        Item item1 = new Item(1L,"name","description",true,1L,1L);
+        Item item2 = new Item(1L,"name","description",true,1L,1L);
+        Item item3 = new Item(1L,"name","description2",true,1L,1L);
+        assertEquals(item1, item2);
+        assertEquals(item1, item3);
+
+        ItemLong itemLong1 = new ItemLong(1L,"name","description",true,1L,1L,null,null,null);
+        ItemLong itemLong2 = new ItemLong(1L,"name","description",true,1L,1L,null,null,null);
+        ItemLong itemLong3 = new ItemLong(1L,"name","description2",true,1L,1L,null,null,null);
+
+        assertEquals(itemLong1, itemLong2);
+        assertEquals(itemLong1, itemLong3);
     }
 }
