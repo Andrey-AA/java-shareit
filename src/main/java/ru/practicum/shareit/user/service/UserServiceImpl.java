@@ -32,7 +32,6 @@ public class UserServiceImpl implements UserService {
     public UserDto saveUser(UserDto userDto) {
         checkEmail(userDto);
         User user = UserMapper.toUser(userDto);
-
         return UserMapper.toDTO(repository.save(user));
     }
 

@@ -11,7 +11,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.request.controller.ItemRequestController;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.model.ItemRequestFull;
+import ru.practicum.shareit.request.dto.ItemRequestFull;
 import ru.practicum.shareit.request.service.ItemRequestService;
 import java.time.LocalDateTime;
 import java.util.List;

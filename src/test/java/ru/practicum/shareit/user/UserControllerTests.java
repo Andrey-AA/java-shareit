@@ -53,7 +53,7 @@ class UserControllerTests {
         UserDto userDto3 = new UserDto(3L, "name3","email3@mail.ru","668");
         List<UserDto> listUsers = List.of(userDto, userDto2, userDto3);
 
-        Mockito.when(userService.getAllUsers()).thenReturn(listUsers);
+            Mockito.when(userService.getAllUsers()).thenReturn(listUsers);
         mockMvc.perform(get("/users").contentType(MediaType.APPLICATION_JSON))
                .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].email").value("email@mail.ru"));

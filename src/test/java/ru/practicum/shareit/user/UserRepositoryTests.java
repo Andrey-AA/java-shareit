@@ -5,9 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 
@@ -21,8 +23,12 @@ class UserRepositoryTests {
     @Autowired
     UserRepository userRepository;
 
+    @MockBean
+    UserService userService;
+
     @Test
     void findAllUsersTest() {
+        userRepository.deleteAll();
         List<User> allUsers = userRepository.findAll();
         assertThat(allUsers).isEmpty();
     }
@@ -32,7 +38,6 @@ class UserRepositoryTests {
         User user = userRepository.save(new User(1L,"name","email@mail.com"));
         userRepository.save(user);
         assertThat(user).isNotNull();
-        //Same: Assertions.assertNotNull(user);
     }
 
     @Test
@@ -45,6 +50,7 @@ class UserRepositoryTests {
 
     @Test
     void deleteUserTest() {
+        userRepository.deleteAll();
         User user = userRepository.save(new User(1L,"name","email@mail.com"));
         User user2 = userRepository.save(new User(2L,"name2","email2@mail.com"));
         User user3 = userRepository.save(new User(3L,"name3","email3@mail.com"));
