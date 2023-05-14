@@ -14,7 +14,7 @@ public interface BookingService {
 
     BookingShort approveBooking(Long bookingId, boolean approved, Long requesterId);
 
-    BookingShort cancelBooking(Long bookingId, boolean canceled, Long requesterId);
+    BookingShort cancelBooking(Long bookingId, Long requesterId);
 
     List<BookingShort> findBookingsByUser(String state, Long requesterId, Integer from, Integer size);
 

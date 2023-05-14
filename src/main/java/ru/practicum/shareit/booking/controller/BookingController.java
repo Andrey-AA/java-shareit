@@ -41,7 +41,7 @@ public class BookingController {
     public BookingShort cancelBooking(@PathVariable Long bookingId,
                                       @RequestParam Boolean canceled,
                                       @RequestHeader(USER_ID) Long requesterId) {
-        return bookingService.cancelBooking(bookingId, canceled, requesterId);
+        return bookingService.cancelBooking(bookingId, requesterId);
     }
 
     @GetMapping()

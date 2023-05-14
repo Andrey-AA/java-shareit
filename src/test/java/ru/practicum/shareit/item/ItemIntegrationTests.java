@@ -112,12 +112,12 @@ class ItemIntegrationTests {
         User user = userRepository.save(new User(1L, "name", "email@mail.ru"));
         Item item = itemRepository.save(new Item(1L, "itemName", "description", true,
                 user.getId(), user.getId()));
-        Item updatedItem = itemRepository.save(new Item(1L, "updatedItem", "updatedDescription",
-                true, user.getId(), user.getId()));
+        Item updatedItem = new Item(item.getId(), "updatedItem", "updatedDescription",
+                true, user.getId(), user.getId());
 
-        mockMvc.perform(patch("/items/{itemId}", updatedItem.getId()).contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(patch("/items/{itemId}", item.getId()).contentType(MediaType.APPLICATION_JSON)
                         .header(header, user.getId())
-                        .content(objectMapper.writeValueAsString(item)))
+                        .content(objectMapper.writeValueAsString(updatedItem)))
                 .andExpect(jsonPath("$.name").value("updatedItem"))
                 .andExpect(status().isOk());
     }

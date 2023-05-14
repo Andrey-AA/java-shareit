@@ -135,7 +135,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingShort cancelBooking(Long bookingId, boolean canceled, Long requesterId) {
+    public BookingShort cancelBooking(Long bookingId, Long requesterId) {
         log.info("Поступил запрос на отмену бронирования");
         userService.checkUserExistence(requesterId);
 
@@ -148,11 +148,7 @@ public class BookingServiceImpl implements BookingService {
             throw new IncorrectParameterException("Отменить бронирование может только автор вещи");
         }
 
-        if (canceled) {
-            booking.setStatus(BookingStatus.APPROVED);
-        } else {
-            booking.setStatus(BookingStatus.REJECTED);
-        }
+        booking.setStatus(BookingStatus.CANCELED);
 
         bookingRepository.save(booking);
         return BookingMapper.toBookingShort(booking);
