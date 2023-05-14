@@ -96,7 +96,7 @@ class RequestIntegrationTests {
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.length()", is(itemRequests.size())))
-                        .andExpect(jsonPath("$.[0].description", is(itemRequest.getDescription())));
+                        .andExpect(jsonPath("$.[0].description", is(itemRequest3.getDescription())));
     }
 
     @Test
@@ -118,7 +118,7 @@ class RequestIntegrationTests {
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.length()", is(itemRequests.size())))
-                        .andExpect(jsonPath("$.[0].description", is(itemRequest.getDescription())));;
+                        .andExpect(jsonPath("$.[0].description", is(itemRequest3.getDescription())));;
     }
 
     @Test
