@@ -28,8 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -116,10 +115,10 @@ class ItemIntegrationTests {
         Item updatedItem = itemRepository.save(new Item(1L, "updatedItem", "updatedDescription",
                 true, user.getId(), user.getId()));
 
-        mockMvc.perform(post("/items").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(patch("/items/{itemId}", updatedItem.getId()).contentType(MediaType.APPLICATION_JSON)
                         .header(header, user.getId())
                         .content(objectMapper.writeValueAsString(item)))
-                .andExpect(jsonPath("$.name").value("itemName"))
+                .andExpect(jsonPath("$.name").value("updatedItem"))
                 .andExpect(status().isOk());
     }
 
