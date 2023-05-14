@@ -34,66 +34,60 @@ class ItemRepositoryTests {
 
     @Test
     void saveItemTest() {
-        Item item = Item
+        Item item = itemRepository.save(Item
                 .builder()
                 .id(1L)
                 .name("name")
                 .description("description")
-                .build();
-        itemRepository.save(item);
+                .build());
         assertThat(item).isNotNull();
     }
 
     @Test
     void findItemByIdTest() {
-        Item item = Item
+        Item item = itemRepository.save(Item
                 .builder()
                 .id(1L)
                 .name("name")
                 .description("description")
-                .build();
-        itemRepository.save(item);
+                .build());
         Item itemFromDB = itemRepository.findById(item.getId()).get();
-        assertThat(item).isNotNull();
+        assertThat(itemFromDB).isNotNull();
     }
 
     @Test
     void deleteItemTest() {
-        Item item = Item
+        Item item = itemRepository.save(Item
                 .builder()
                 .id(1L)
                 .name("name")
                 .description("description")
-                .build();
-        itemRepository.save(item);
-        itemRepository.deleteById(1L);
+                .build());
+        itemRepository.deleteById(item.getId());
         List<Item> allItems = itemRepository.findAll();
         Assertions.assertEquals(0,allItems.size());
     }
 
     @Test
     void search() {
-        Item item = Item
+        Item item = itemRepository.save(Item
                 .builder()
                 .id(1L)
                 .name("name")
                 .description("text")
-                .build();
-        Item item2 = Item
+                .build());
+        Item item2 = itemRepository.save(Item
                 .builder()
                 .id(2L)
                 .name("name2")
                 .description("description2")
-                .build();
-        Item item3 = Item
+                .build());
+        Item item3 = itemRepository.save(Item
                 .builder()
                 .id(3L)
                 .name("name3")
                 .description("description3")
-                .build();
-        itemRepository.save(item);
-        itemRepository.save(item2);
-        itemRepository.save(item3);
+                .build());
         List<Item> resultList = itemRepository.search("text");
         assertThat(resultList).isNotEmpty();
         Assertions.assertEquals(item.getId(),resultList.get(0).getId());
@@ -101,47 +95,42 @@ class ItemRepositoryTests {
 
     @Test
     void findAllByOwner() {
-        User user1 = User
+        User user1 = userRepository.save(User
                 .builder()
                 .id(1L)
                 .name("name")
                 .email("email@mail.com")
-                .build();
+                .build());
 
-        User user2 = User
+        User user2 = userRepository.save(User
                 .builder()
                 .id(2L)
                 .name("name2")
                 .email("email2@mail.com")
-                .build();
+                .build());
 
-        Item item = Item
+        Item item = itemRepository.save(Item
                 .builder()
                 .id(1L)
                 .name("name")
                 .description("text")
-                .owner(1L)
-                .build();
-        Item item2 = Item
+                .owner(user1.getId())
+                .build());
+        Item item2 = itemRepository.save(Item
                 .builder()
                 .id(2L)
                 .name("name2")
                 .description("description2")
-                .owner(1L)
-                .build();
-        Item item3 = Item
+                .owner(user1.getId())
+                .build());
+        Item item3 = itemRepository.save(Item
                 .builder()
                 .id(3L)
                 .name("name3")
                 .description("description3")
-                .owner(2L)
-                .build();
+                .owner(user2.getId())
+                .build());
 
-        userRepository.save(user1);
-        userRepository.save(user2);
-        itemRepository.save(item);
-        itemRepository.save(item2);
-        itemRepository.save(item3);
         List<Item> resultList = itemRepository.findAllByOwner(item.getOwner());
         assertThat(resultList).isNotEmpty();
         Assertions.assertEquals(item.getId(),resultList.get(0).getId());
@@ -149,30 +138,27 @@ class ItemRepositoryTests {
 
     @Test
     void findAllByRequestId() {
-        Item item = Item
+        Item item = itemRepository.save(Item
                 .builder()
                 .id(1L)
                 .name("name")
                 .description("text")
                 .requestId(1L)
-                .build();
-        Item item2 = Item
+                .build());
+        Item item2 = itemRepository.save(Item
                 .builder()
                 .id(2L)
                 .name("name2")
                 .description("description2")
                 .requestId(1L)
-                .build();
-        Item item3 = Item
+                .build());
+        Item item3 = itemRepository.save(Item
                 .builder()
                 .id(3L)
                 .name("name3")
                 .description("description3")
                 .requestId(2L)
-                .build();
-        itemRepository.save(item);
-        itemRepository.save(item2);
-        itemRepository.save(item3);
+                .build());
         List<Item> resultList = itemRepository.findAllByRequestId(item.getRequestId());
         assertThat(resultList).isNotEmpty();
         Assertions.assertEquals(item.getId(),resultList.get(0).getId());

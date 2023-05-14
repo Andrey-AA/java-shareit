@@ -53,14 +53,12 @@ class UserRepositoryTests {
         userRepository.deleteAll();
         User user = userRepository.save(new User(1L,"name","email@mail.com"));
         User user2 = userRepository.save(new User(2L,"name2","email2@mail.com"));
-        User user3 = userRepository.save(new User(3L,"name3","email3@mail.com"));
         userRepository.save(user);
         userRepository.save(user2);
-        userRepository.save(user3);
-        userRepository.deleteById(1L);
-        userRepository.deleteById(2L);
+        userRepository.delete(user);
+        userRepository.delete(user2);
         List<User> all = userRepository.findAll();
-        Assertions.assertEquals(1,all.size());
+        Assertions.assertEquals(0,all.size());
     }
 
     @Test

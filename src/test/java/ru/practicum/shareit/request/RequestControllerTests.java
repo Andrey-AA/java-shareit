@@ -1,6 +1,7 @@
 package ru.practicum.shareit.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import ru.practicum.shareit.request.controller.ItemRequestController;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestFull;
 import ru.practicum.shareit.request.service.ItemRequestService;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -60,16 +62,21 @@ class RequestControllerTests {
 
     @Test
     void getAllItemRequestsTest() throws Exception {
-        ItemRequestFull itemRequestFull = new ItemRequestFull(1L,"description",1L,LocalDateTime.now(),null);
-        ItemRequestFull itemRequestFull2 = new ItemRequestFull(2L,"description2",1L,LocalDateTime.now(),null);
-        ItemRequestFull itemRequestFull3 = new ItemRequestFull(3L,"description3",1L,LocalDateTime.now(),null);
+        ItemRequestFull itemRequestFull = new ItemRequestFull(1L,"description",1L,
+                LocalDateTime.now().minusDays(5),null);
+        ItemRequestFull itemRequestFull2 = new ItemRequestFull(2L,"description2",1L,
+                LocalDateTime.now().minusDays(6),null);
+        ItemRequestFull itemRequestFull3 = new ItemRequestFull(3L,"description3",1L,
+                LocalDateTime.now().minusDays(7),null);
         List<ItemRequestFull> itemRequests = List.of(itemRequestFull, itemRequestFull2, itemRequestFull3);
 
         Mockito.when(itemRequestService.getItemRequestsByUserId(1L)).thenReturn(itemRequests);
         mockMvc.perform(get("/requests")
-                .header("X-Sharer-User-Id", 1L)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                        .header("X-Sharer-User-Id", 1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", Matchers.is(itemRequests.size())))
+                .andExpect(jsonPath("$[0].description", Matchers.is(itemRequestFull.getDescription())));;
     }
 
     @Test

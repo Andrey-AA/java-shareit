@@ -112,9 +112,9 @@ class ItemControllerTests {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(listItems.size())))
-                .andExpect(jsonPath("[0].name", is(itemDto.getName())))
-                .andExpect(jsonPath("[0].description", is(itemDto.getDescription())))
-                .andExpect(jsonPath("[0].available", is(itemDto.getAvailable())));
+                .andExpect(jsonPath("$[0].name", is(itemDto.getName())))
+                .andExpect(jsonPath("$[0].description", is(itemDto.getDescription())))
+                .andExpect(jsonPath("$[0].available", is(itemDto.getAvailable())));
     }
 
     @Test

@@ -27,6 +27,12 @@ public class ItemRequest {
     @Column(name = "created", nullable = false)
     private LocalDateTime created;
 
+    public ItemRequest(String description, Long requesterId, LocalDateTime created) {
+        this.description = description;
+        this.requesterId = requesterId;
+        this.created = created;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
