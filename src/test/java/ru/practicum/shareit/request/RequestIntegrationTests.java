@@ -55,35 +55,38 @@ class RequestIntegrationTests {
     @Test
     @Rollback
     void createItemRequestTest() throws Exception {
-        User user = new User(1L, "name","email@mail.ru");
-        ItemRequest itemRequest = new ItemRequest(1L,"description",1L,LocalDateTime.now().minusDays(5));
-        ItemRequestDto itemRequestDto = new ItemRequestDto(1L,"description",1L,LocalDateTime.now().minusDays(5));
-        userRepository.save(user);
+        User user = new User(1L, "name", "email@mail.ru");
+        user = userRepository.save(user);
+        ItemRequest itemRequest = new ItemRequest(1L, "description", user.getId(), LocalDateTime.now().minusDays(5));
+        ItemRequestDto itemRequestDto = new ItemRequestDto(1L, "description", user.getId(), LocalDateTime.now().minusDays(5));
+
         itemRequestRepository.save(itemRequest);
 
-        mockMvc.perform(post("/requests",itemRequest)
-                .header("X-Sharer-User-Id", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(itemRequestDto))).andExpect(status().isOk())
+        mockMvc.perform(post("/requests", itemRequest)
+                        .header("X-Sharer-User-Id", user.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(itemRequestDto))).andExpect(status().isOk())
                 .andExpect(jsonPath("$.description").value("description"));
     }
 
     @Test
     @Rollback
     void createRequestWithoutDescriptionTest() throws Exception {
-        User user = new User(1L, "name","email@mail.ru");
-        ItemRequestDto itemRequestDto = new ItemRequestDto(1L,"",1L,LocalDateTime.now().minusDays(5));
-        userRepository.save(user);
-        assertThrows(InvalidItemParametersException.class, () -> itemRequestService.saveItemRequest(1L,itemRequestDto));
+        User user = new User(1L, "name", "email@mail.ru");
+
+        user = userRepository.save(user);
+        Long userId = user.getId();
+        ItemRequestDto itemRequestDto = new ItemRequestDto(1L, "", user.getId(), LocalDateTime.now().minusDays(5));
+        assertThrows(InvalidItemParametersException.class, () -> itemRequestService.saveItemRequest(userId, itemRequestDto));
     }
 
     @Test
     @Rollback
     void getItemRequestByUserIdTest() throws Exception {
-        User user = new User(1L, "name","email@mail.ru");
-        ItemRequest itemRequest = new ItemRequest(1L,"description",1L,LocalDateTime.now().minusDays(5));
-        ItemRequest itemRequest2 = new ItemRequest(2L,"description2",1L,LocalDateTime.now().minusDays(5));
-        ItemRequest itemRequest3 = new ItemRequest(3L,"description3",1L,LocalDateTime.now().minusDays(5));
+        User user = new User(1L, "name", "email@mail.ru");
+        ItemRequest itemRequest = new ItemRequest(1L, "description", 1L, LocalDateTime.now().minusDays(5));
+        ItemRequest itemRequest2 = new ItemRequest(2L, "description2", 1L, LocalDateTime.now().minusDays(6));
+        ItemRequest itemRequest3 = new ItemRequest(3L, "description3", 1L, LocalDateTime.now().minusDays(7));
         userRepository.save(user);
         itemRequestRepository.deleteAll();
         itemRequestRepository.save(itemRequest);
@@ -102,11 +105,13 @@ class RequestIntegrationTests {
     @Test
     @Rollback
     void getAllItemRequestsTest() throws Exception {
-        User user = new User(1L, "name","email@mail.ru");
-        ItemRequest itemRequest = new ItemRequest(1L,"description",1L,LocalDateTime.now().minusDays(5));
-        ItemRequest itemRequest2 = new ItemRequest(2L,"description2",1L,LocalDateTime.now().minusDays(5));
-        ItemRequest itemRequest3 = new ItemRequest(3L,"description3",1L,LocalDateTime.now().minusDays(5));
-        userRepository.save(user);
+        User user = new User(1L, "name", "email@mail.ru");
+
+        user = userRepository.save(user);
+
+        ItemRequest itemRequest = new ItemRequest(1L, "description", user.getId(), LocalDateTime.now().minusDays(5));
+        ItemRequest itemRequest2 = new ItemRequest(2L, "description2", user.getId(), LocalDateTime.now().minusDays(6));
+        ItemRequest itemRequest3 = new ItemRequest(3L, "description3", user.getId(), LocalDateTime.now().minusDays(7));
         itemRequestRepository.deleteAll();
         itemRequestRepository.save(itemRequest);
         itemRequestRepository.save(itemRequest2);
@@ -114,9 +119,9 @@ class RequestIntegrationTests {
 
         List<ItemRequest> itemRequests = List.of(itemRequest, itemRequest2, itemRequest3);
         mockMvc.perform(get("/requests")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header("X-Sharer-User-Id", user.getId())
                         .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk())
+                .andExpect(status().isOk())
                         .andExpect(jsonPath("$.length()", is(itemRequests.size())))
                         .andExpect(jsonPath("$[0].description", is(itemRequest.getDescription())));;
     }
@@ -124,15 +129,16 @@ class RequestIntegrationTests {
     @Test
     @Rollback
     void getItemRequestByIdTest() throws Exception {
-        User user = new User(1L, "name","email@mail.ru");
-        ItemRequest itemRequest = new ItemRequest(1L,"description",1L,LocalDateTime.now().minusDays(5));
-        userRepository.save(user);
-        itemRequestRepository.save(itemRequest);
+        User user = new User(1L, "name", "email@mail.ru");
+        user = userRepository.save(user);
 
-        mockMvc.perform(get("/requests/{requestId}", 1L).header("X-Sharer-User-Id", 1L)
+        ItemRequest itemRequest = new ItemRequest(1L, "description", user.getId(), LocalDateTime.now().minusDays(5));
+        itemRequest = itemRequestRepository.save(itemRequest);
+
+        mockMvc.perform(get("/requests/{requestId}", itemRequest.getId()).header("X-Sharer-User-Id", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(itemRequest))).andExpect(status().isOk())
-                        .andExpect(jsonPath("$.description").value("description"))
-                        .andExpect(jsonPath("$.requesterId").value(1L));
+                .andExpect(jsonPath("$.description").value("description"))
+                .andExpect(jsonPath("$.requesterId").value(user.getId()));
     }
 }
