@@ -157,9 +157,9 @@ class ItemIntegrationTests {
                         .param("text", "text")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.length()", is(listItems.size())))
-                        .andExpect(jsonPath("[0].name", is(item.getName())));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(listItems.size())))
+                .andExpect(jsonPath("$[0].name", is(item.getName())));
     }
 
     @Test
@@ -182,4 +182,5 @@ class ItemIntegrationTests {
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.text").value("text"));
     }
+
 }

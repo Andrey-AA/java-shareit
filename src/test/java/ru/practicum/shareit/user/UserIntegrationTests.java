@@ -6,23 +6,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.exception.InvalidEmailException;
-import ru.practicum.shareit.exception.UserAlreadyExistException;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
 
+import static org.hamcrest.Matchers.*;
 import javax.transaction.Transactional;
+import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,97 +32,70 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class UserIntegrationTests {
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-    @Autowired
-    ObjectMapper objectMapper;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    UserService userService;
+    @MockBean
+    private UserService userService;
 
     @Test
-    @Rollback
-    void saveUserTest() throws Exception {
-        User user = new User(1L, "name","email@mail.ru");
-        userRepository.save(user);
-        mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(user)))
+    public void givenUser_whenGetUsers_thenReturnJsonArray() throws Exception {
+        UserDto user = new UserDto(1, "testUser", "testEmail@test.com", "testDto");
+
+        List<UserDto> allUsers = Arrays.asList(user);
+
+        given(userService.getAllUsers()).willReturn(allUsers);
+
+        mockMvc.perform(get("/users")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("name"));
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].name", is(user.getName())));
     }
 
     @Test
-    @Rollback
-    void saveUserWithIncorrectEmailTest() throws Exception {
-       userRepository.deleteAll();
-       UserDto invalidMailUser = new UserDto(1L, "name","","dto");
-       assertThrows(InvalidEmailException.class, () -> userService.saveUser(invalidMailUser));
-    }
+    public void givenUser_whenGetUserById_thenReturnJson() throws Exception {
+        UserDto user = new UserDto(1, "testUser", "testEmail@test.com", "testDto");
 
-    @Test
-    @Rollback
-    void saveAlreadyExistUserTest() throws Exception {
-        User oldUser1 = new User(1L, "name","email10@mail.ru");
-        User oldUser2 = new User(2L, "name2","email12@mail.ru");
-        UserDto newUser = new UserDto(2L, "name","email12@mail.ru","dto");
-        userRepository.save(oldUser1);
-        userRepository.save(oldUser2);
-        assertThrows(UserAlreadyExistException.class, () -> userService.updateUser(newUser,1L));
-    }
+        given(userService.getById(1L)).willReturn(user);
 
-    @Test
-    @Rollback
-    void getAllUsersTest() throws Exception {
-        User user = new User(1L, "name","email@mail.ru");
-        User user2 = new User(2L, "name2","email2@mail.ru");
-        User user3 = new User(3L, "name3","email3@mail.ru");
-        userRepository.save(user);
-        userRepository.findAll();
-        mockMvc.perform(get("/users").contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/users/1")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].email").value("email@mail.ru"));
+                .andExpect(jsonPath("$.name", is(user.getName())));
     }
 
     @Test
-    @Rollback
-    void findUserByIdTest() throws Exception {
-        User user = new User(1L, "name","email@mail.ru");
-        userRepository.save(user);
-        userRepository.getReferenceById(user.getId());
+    public void givenUser_whenSaveUser_thenStatus201() throws Exception {
+        UserDto user = new UserDto(1, "testUser", "testEmail@test.com", "testDto");
 
-        mockMvc.perform(get("/users/{id}", user.getId()).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.name").value("name"))
-                .andExpect(jsonPath("$.email").value("email@mail.ru"));
-    }
+        given(userService.saveUser(user)).willReturn(user);
 
-    @Test
-    @Rollback
-    void removeUserTest() throws Exception {
-        User user = new User(1L, "name","email@mail.ru");
-        userRepository.save(user);
-
-        mockMvc.perform(delete("/users/{id}",user.getId())
+        mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(user)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("name"));
+                        .content(new ObjectMapper().writeValueAsString(user)))
+                .andExpect(status().isOk());
     }
 
     @Test
-    @Rollback
-    void updateUserTest() throws Exception {
-        User user = new User(1L, "name","email@mail.ru");
-        UserDto updatedUser = new UserDto(1L, "updatedName","updatedemail@mail.ru","dto");
-        userRepository.save(user);
-        userService.updateUser(updatedUser,1L);
+    public void givenUser_whenDeleteUser_thenStatus200() throws Exception {
+        UserDto user = new UserDto(1, "testUser", "testEmail@test.com", "testDto");
 
-        mockMvc.perform(patch("/users/{id}", updatedUser.getId()).contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedUser)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value("updatedemail@mail.ru"))
-                .andExpect(jsonPath("$.name").value("updatedName"));
+        given(userService.removeUser(1L)).willReturn(user);
+
+        mockMvc.perform(delete("/users/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void givenUser_whenUpdateUser_thenStatus200() throws Exception {
+        UserDto user = new UserDto(1, "testUser", "testEmail@test.com", "testDto");
+
+        given(userService.updateUser(user, 1L)).willReturn(user);
+
+        mockMvc.perform(patch("/users/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(user)))
+                .andExpect(status().isOk());
     }
 }

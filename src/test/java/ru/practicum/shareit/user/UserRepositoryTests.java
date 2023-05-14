@@ -57,8 +57,8 @@ class UserRepositoryTests {
         userRepository.save(user);
         userRepository.save(user2);
         userRepository.save(user3);
-        userRepository.deleteById(1L);
-        userRepository.deleteById(2L);
+        userRepository.delete(user);
+        userRepository.delete(user2);
         List<User> all = userRepository.findAll();
         Assertions.assertEquals(1,all.size());
     }

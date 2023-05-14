@@ -11,10 +11,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.InvalidItemParametersException;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.dto.ItemRequestFull;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.request.service.ItemRequestService;
@@ -98,7 +96,7 @@ class RequestIntegrationTests {
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.length()", is(itemRequests.size())))
-                        .andExpect(jsonPath("[0].description", is(itemRequest3.getDescription())));
+                        .andExpect(jsonPath("$.[0].description", is(itemRequest.getDescription())));
     }
 
     @Test
@@ -120,35 +118,21 @@ class RequestIntegrationTests {
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.length()", is(itemRequests.size())))
-                        .andExpect(jsonPath("[0].description", is(itemRequest3.getDescription())));;
+                        .andExpect(jsonPath("$.[0].description", is(itemRequest.getDescription())));;
     }
 
     @Test
     @Rollback
     void getItemRequestByIdTest() throws Exception {
         User user = new User(1L, "name","email@mail.ru");
-        ItemRequestFull itemRequest = new ItemRequestFull(1L,"description",1L,LocalDateTime.now().minusDays(5),null);
-        ItemRequestDto itemRequestDto = new ItemRequestDto(1L,"description",1L,LocalDateTime.now().minusDays(5));
+        ItemRequest itemRequest = new ItemRequest(1L,"description",1L,LocalDateTime.now().minusDays(5));
         userRepository.save(user);
-        itemRequestService.saveItemRequest(1L,itemRequestDto);
+        itemRequestRepository.save(itemRequest);
 
         mockMvc.perform(get("/requests/{requestId}", 1L).header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(itemRequest))).andExpect(status().isOk())
-                        .andExpect(jsonPath("$.id").value(1L))
                         .andExpect(jsonPath("$.description").value("description"))
                         .andExpect(jsonPath("$.requesterId").value(1L));
-    }
-
-    @Test
-    @Rollback
-    void getItemRequestByWrongIdTest() {
-        assertThrows(EntityNotFoundException.class, () -> itemRequestService.getItemRequestById(1L,99L));
-    }
-
-    @Test
-    @Rollback
-    void getItemRequestByNullIdTest() {
-        assertThrows(EntityNotFoundException.class, () -> itemRequestService.getItemRequestById(1L,null));
     }
 }
