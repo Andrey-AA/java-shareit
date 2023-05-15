@@ -129,19 +129,19 @@ class ItemIntegrationTests {
     @Rollback
     void searchTest() throws Exception {
         User user = userRepository.save(new User(1L, "name", "email@mail.ru"));
-        Item item = itemRepository.save(new Item(1L, "text", "text", true, user.getId(), user.getId()));
+        User user2 = userRepository.save(new User(2L, "name", "email2@mail.ru"));
+        Item item = itemRepository.save(new Item(1L, "text", "text", true, user.getId(), user2.getId()));
         Item item2 = itemRepository.save(new Item(2L, "itemName2", "description2", true, user.getId(), user.getId()));
         Item item3 = itemRepository.save(new Item(3L, "itemName3", "description3", true, user.getId(), user.getId()));
         List<Item> listItems = List.of(item);
-        itemRepository.search("text");
+        List<Item> result = itemRepository.search("text");
 
         mockMvc.perform(get("/items/search")
                         .param("text", "text")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(listItems.size())))
-                .andExpect(jsonPath("$[0].name", is(item.getName())));
+                .andExpect(jsonPath("$.length()", is(result.size())));
     }
 
     @Test

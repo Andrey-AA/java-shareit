@@ -40,7 +40,6 @@ class BookingIntegrationTests {
 
     private UserDto userDto1;
 
-    // private BookingFromDomain bookingShortDto;
 
     @BeforeEach
     void init() {
@@ -75,6 +74,7 @@ class BookingIntegrationTests {
         ItemDto item = itemController.createItem(itemDto, user.getId());
         UserDto booker = userController.saveUser(userDto1);
         BookingShort booking = bookingController.createBooking(createBookingFromDomain(item.getId()), booker.getId());
+
     }
 
     @Test
