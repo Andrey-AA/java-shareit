@@ -35,11 +35,7 @@ public class Comment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Comment comment = (Comment) o;
-        return id.equals(comment.id) &&
-                text.equals(comment.text) &&
-                itemId.equals(comment.itemId) &&
-                authorId.equals(comment.authorId) &&
-                created.equals(comment.created);
+        return id.equals(comment.id);
     }
 
     @Override

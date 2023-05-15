@@ -13,12 +13,14 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
@@ -106,6 +108,24 @@ class UserIntegrationTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(user)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void testEqualsAndHashCode() {
+        User user1 = new User(1L, "Test", "Test@example.com");
+        User user2 = new User(1L, "Test", "Test@example.com");
+
+        assertThat(user1).isEqualTo(user2);
+        assertThat(user1.hashCode()).isEqualTo(user2.hashCode());
+    }
+
+    @Test
+    void testEqualsAndHashCodeDifferentIds() {
+        User user1 = new User(1L, "Test", "Test@example.com");
+        User user2 = new User(2L, "Test", "Test@example.com");
+
+        assertThat(user1).isNotEqualTo(user2);
+        assertThat(user1.hashCode()).isNotEqualTo(user2.hashCode());
     }
 }
 

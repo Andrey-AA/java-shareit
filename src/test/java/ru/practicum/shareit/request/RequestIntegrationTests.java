@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -121,6 +122,32 @@ class RequestIntegrationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(itemRequests.size())))
                 .andExpect(jsonPath("$[0].description", is(itemRequests.get(0).getDescription())));
+    }
+
+
+    @Test
+    @Transactional
+    void getAllItemRequestsWithPaginationUnitTest() throws Exception {
+        User user = userRepository.save(new User(1L, "name", "email@mail.com"));
+        User user2 = userRepository.save(new User(2L, "name2", "email2@mail.com"));
+        ItemRequest itemRequest = ItemRequest
+                .builder()
+                .description("description")
+                .requesterId(user.getId())
+                .created(LocalDateTime.now().minusDays(700))
+                .build();
+        ItemRequest itemRequest2 = ItemRequest
+                .builder()
+                .description("description")
+                .requesterId(user.getId())
+                .created(LocalDateTime.now().minusDays(700))
+                .build();
+        itemRequestRepository.save(itemRequest);
+        itemRequestRepository.save(itemRequest2);
+
+        int resultSize = itemRequestService.getAllItemRequestsWithPagination(user2.getId(), 0, 2).size();
+
+        assertEquals(2, resultSize);
     }
 
     @Test

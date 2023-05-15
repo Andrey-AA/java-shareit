@@ -12,7 +12,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.request.controller.ItemRequestController;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestFull;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.request.service.ItemRequestService;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,14 +34,20 @@ class RequestControllerTests {
     ObjectMapper objectMapper;
 
     @MockBean
+    ItemRequestRepository itemRequestRepository;
+
+    @MockBean
+    UserRepository userRepository;
+
+    @MockBean
     ItemRequestService itemRequestService;
 
     @Test
     void createItemRequestTest() throws Exception {
-        ItemRequestDto itemRequestDto = new ItemRequestDto(1L,"description", 1L,LocalDateTime.now());
+        ItemRequestDto itemRequestDto = new ItemRequestDto(1L, "description", 1L, LocalDateTime.now());
 
         Mockito.when(itemRequestService.saveItemRequest(1L, itemRequestDto)).thenReturn(itemRequestDto);
-        mockMvc.perform(post("/requests",itemRequestDto)
+        mockMvc.perform(post("/requests", itemRequestDto)
                 .header("X-Sharer-User-Id", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(itemRequestDto))).andExpect(status().isOk());
@@ -56,7 +64,7 @@ class RequestControllerTests {
         mockMvc.perform(get("/requests")
                         .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk());
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -84,9 +92,10 @@ class RequestControllerTests {
 
         Mockito.when(itemRequestService.getItemRequestById(1L,1L)).thenReturn(itemRequestFull);
         mockMvc.perform(get("/requests/{requestId}", 1L).header("X-Sharer-User-Id", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(itemRequestFull))).andExpect(status().isOk())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(itemRequestFull))).andExpect(status().isOk())
                 .andExpect(jsonPath("$.description").value("description"))
                 .andExpect(jsonPath("$.requesterId").value(1L));
     }
+
 }

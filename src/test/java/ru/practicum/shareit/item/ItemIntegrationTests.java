@@ -18,6 +18,8 @@ import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.InvalidItemParametersException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemLong;
+import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -29,6 +31,7 @@ import ru.practicum.shareit.user.service.UserService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -254,13 +257,56 @@ class ItemIntegrationTests {
         assertFalse(comment1.equals(comment3) || comment3.equals(comment1));
         assertNotEquals(comment1.hashCode(), comment3.hashCode());
 
-        assertTrue(comment1.equals(comment2));
+        assertEquals(comment1, comment2);
         assertEquals(comment1.hashCode(), comment2.hashCode());
 
-        assertFalse(comment1.equals("test"));
+        assertNotEquals("test", comment1);
         assertNotEquals(comment1.hashCode(), "test".hashCode());
 
-        assertTrue(comment1.equals(comment1));
+        assertEquals(comment1, comment1);
         assertEquals(comment1.hashCode(), comment1.hashCode());
     }
+
+    @Test
+    void testToDTOs() {
+        Item item1 = new Item(1L, "Item 1", "Description 1", true, 1L, 1L);
+        Item item2 = new Item(2L, "Item 2", "Description 2", false, 2L, 2L);
+
+        List<ItemDto> dtos = ItemMapper.toDTOs(Arrays.asList(item1, item2));
+
+        assertEquals(2, dtos.size());
+        assertEquals(item1.getId(), dtos.get(0).getId());
+        assertEquals(item2.getName(), dtos.get(1).getName());
+    }
+
+    @Test
+    void testToItemLong() {
+        Item item = new Item(1L, "Item 1", "Description 1", true, 1L, 1L);
+        Booking lastBooking = new Booking(1L, LocalDateTime.now().minusDays(1), LocalDateTime.now().minusHours(2), item, new User(1L, "User 1", "email1@mail.ru"), BookingStatus.APPROVED);
+        Booking nextBooking = new Booking(2L, LocalDateTime.now().plusHours(1), LocalDateTime.now().plusDays(1), item, new User(2L, "User 2", "email2@mail.ru"), BookingStatus.APPROVED);
+        CommentDto comment = new CommentDto(1L, "Comment 1", 1L, "User 1", 1L, LocalDateTime.now());
+
+        ItemLong itemLong = ItemMapper.toItemLong(item, lastBooking, nextBooking, List.of(comment));
+
+        assertEquals(item.getId(), itemLong.getId());
+        assertEquals(lastBooking.getId(), itemLong.getLastBooking().getId());
+        assertEquals(nextBooking.getBooker().getId(), itemLong.getNextBooking().getBookerId());
+        assertEquals(comment.getText(), itemLong.getComments().get(0).getText());
+    }
+
+    @Test
+    void testToLong() {
+        Item item = new Item(1L, "Item 1", "Description 1", true, 1L, 1L);
+        Booking lastBooking = new Booking(1L, LocalDateTime.now().minusDays(1), LocalDateTime.now().minusHours(2), item, new User(1L, "User 1", "email1@mail.ru"), BookingStatus.APPROVED);
+        Booking nextBooking = new Booking(2L, LocalDateTime.now().plusHours(1), LocalDateTime.now().plusDays(1), item, new User(2L, "User 2", "email2@mail.ru"), BookingStatus.APPROVED);
+        CommentDto comment = new CommentDto(1L, "Comment 1", 1L, "User 1", 1L, LocalDateTime.now());
+
+        ItemLong itemLong = ItemMapper.toLong(item, Arrays.asList(lastBooking, nextBooking), List.of(comment));
+
+        assertEquals(item.getId(), itemLong.getId());
+        assertEquals(lastBooking.getId(), itemLong.getLastBooking().getId());
+        assertEquals(nextBooking.getBooker().getId(), itemLong.getNextBooking().getBookerId());
+        assertEquals(comment.getText(), itemLong.getComments().get(0).getText());
+    }
+
 }
