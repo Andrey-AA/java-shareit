@@ -14,7 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.exception.InvalidItemParametersException;
 import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -152,13 +155,47 @@ class ItemIntegrationTests {
         bookingRepository.save(new Booking(1L, LocalDateTime.now().minusDays(7),
                 LocalDateTime.now().minusDays(3), item, booker, BookingStatus.APPROVED));
 
-        itemService.saveComment(commentDto, booker.getId(), item.getId());
-
         mockMvc.perform(post("/items/{itemId}/comment", item.getId()).contentType(MediaType.APPLICATION_JSON)
                         .header(header, booker.getId())
                         .content(objectMapper.writeValueAsString(commentDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.text").value("text"));
+    }
+
+    @Test
+    @Rollback
+    void saveEmptyComment() {
+        User owner = userRepository.save(new User(1L, "name", "email@mail.ru"));
+        User booker = userRepository.save(new User(2L, "name2", "email2@mail.ru"));
+        Item item = itemRepository.save(new Item(1L, "text", "text", true, owner.getId(), booker.getId()));
+        CommentDto commentDto = new CommentDto(1L, "", owner.getId(), "name", 5000000L,
+                LocalDateTime.now());
+        bookingRepository.save(new Booking(1L, LocalDateTime.now().minusDays(7),
+                LocalDateTime.now().minusDays(3), item, booker, BookingStatus.APPROVED));
+
+        assertThrows(InvalidItemParametersException.class, () -> itemService.saveComment(commentDto, booker.getId(), item.getId()));
+        assertThrows(InvalidItemParametersException.class, () -> itemService.saveComment(commentDto, 5000000L, item.getId()));
+    }
+
+    @Test
+    @Rollback
+    void checkItemParametersTest() {
+        final ItemDto itemDto1 = ItemDto
+                .builder()
+                .id(1L)
+                .name("itemName")
+                .description("")
+                .available(true)
+                .build();
+        assertThrows(InvalidItemParametersException.class, () -> itemService.saveItem(itemDto1, 1L));
+        final ItemDto itemDto2 = ItemDto
+                .builder()
+                .id(2L)
+                .name("itemName")
+                .description("itemDesc")
+                .available(null)
+                .build();
+        assertThrows(InvalidItemParametersException.class, () -> itemService.saveItem(itemDto2, 1L));
     }
 
 }

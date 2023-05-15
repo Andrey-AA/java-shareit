@@ -167,9 +167,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void checkItemParameters(ItemDto itemDto) {
-        if (Objects.isNull(itemDto.getAvailable()) || Objects.isNull(itemDto.getDescription())
-                || Objects.isNull(itemDto.getName()) || itemDto.getDescription().isBlank()
-                || itemDto.getName().isBlank()) {
+        if (Objects.isNull(itemDto.getAvailable()) || StringUtils.isBlank(itemDto.getDescription())
+                || StringUtils.isBlank(itemDto.getName())) {
             throw new InvalidItemParametersException("Поля Available, Description и Name не могут быть пустыми.");
         }
     }
@@ -205,7 +204,7 @@ public class ItemServiceImpl implements ItemService {
         commentDto.setItemId(itemId);
         commentDto.setCreated(LocalDateTime.now());
         Comment comment = ItemMapper.toComment(commentDto);
-        commentRepository.save(comment);
+        comment = commentRepository.save(comment);
 
         return ItemMapper.toCommentDto(comment, userRepository);
     }
