@@ -48,25 +48,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ItemIntegrationTests {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
 
     @Autowired
-    ItemService itemService;
+    private ItemService itemService;
 
     @Autowired
-    BookingRepository bookingRepository;
+    private BookingRepository bookingRepository;
 
     private final String header = "X-Sharer-User-Id";
 
@@ -308,5 +308,4 @@ class ItemIntegrationTests {
         assertEquals(nextBooking.getBooker().getId(), itemLong.getNextBooking().getBookerId());
         assertEquals(comment.getText(), itemLong.getComments().get(0).getText());
     }
-
 }

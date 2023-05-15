@@ -20,7 +20,7 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PostMapping()
+    @PostMapping
     public UserDto saveUser(@Valid @RequestBody UserDto userDto) {
         return userService.saveUser(userDto);
     }

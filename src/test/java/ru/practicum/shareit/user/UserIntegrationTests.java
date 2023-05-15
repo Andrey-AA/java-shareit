@@ -41,7 +41,7 @@ class UserIntegrationTests {
     private UserService userServiceMock;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Test
     @Rollback

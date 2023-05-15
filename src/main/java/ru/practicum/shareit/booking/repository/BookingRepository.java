@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.repository;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,7 +21,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long>  {
             Long requesterId, LocalDateTime now, LocalDateTime now2, Pageable pageable);
 
     @Query(value = " SELECT * FROM Bookings WHERE booker = ?1 AND start_date >= ?2 order by start_date DESC ", nativeQuery = true)
-    List<Booking> findAllByBookerAndStartGreaterThanOrderByIdDesc(Long booker, LocalDateTime now, Pageable pageable);
+    Page<Booking> findAllByBookerAndStartGreaterThanOrderByIdDesc(Long booker, LocalDateTime now, Pageable pageable);
 
     List<Booking> findAllByBookerIdAndEndBeforeAndStatusOrderByStartDesc(
             Long requesterId, LocalDateTime now, BookingStatus status, Pageable pageable);

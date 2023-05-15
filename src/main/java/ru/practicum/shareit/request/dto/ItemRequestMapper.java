@@ -7,6 +7,7 @@ import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ItemRequestMapper {
 
@@ -50,9 +51,14 @@ public class ItemRequestMapper {
     public static List<ItemRequestFull> toFulls(@NonNull List<ItemRequest> itemRequests, ItemRepository itemRepository) {
         List<ItemRequestFull> itemRequestFulls = new ArrayList<>();
 
+        List<Item> items = itemRepository.findAllByRequestIdIn(itemRequests.stream()
+                .map(ItemRequest::getId).collect(Collectors.toList()));
+
         for (ItemRequest itemRequest : itemRequests) {
-            List<Item> items = itemRepository.findAllByRequestId(itemRequest.getRequesterId());
-            itemRequestFulls.add(ItemRequestMapper.toItemRequestFull(itemRequest,items));
+            itemRequestFulls.add(ItemRequestMapper.toItemRequestFull(
+                    itemRequest, items.stream()
+                            .filter(item -> item.getRequestId().equals(itemRequest.getId())).collect(Collectors.toList()))
+            );
         }
 
         return itemRequestFulls;

@@ -6,11 +6,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.BookingState;
+import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingFromDomain;
-import ru.practicum.shareit.booking.dto.BookingShort;
 import ru.practicum.shareit.booking.dto.BookingMapper;
+import ru.practicum.shareit.booking.dto.BookingShort;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.EntityNotFoundException;
@@ -162,7 +162,7 @@ public class BookingServiceImpl implements BookingService {
         log.info("Провека на существование пользователя завершена успешно");
         checkPagination(from, size);
         final LocalDateTime now = LocalDateTime.now();
-                List<Booking> userBookings = new ArrayList<>();
+        List<Booking> userBookings;
         Pageable pageable = PageRequest.of(from / size, size);
 
         log.info(String.format("Статус %s", BookingState.valueOf(state)));
@@ -176,12 +176,10 @@ public class BookingServiceImpl implements BookingService {
                         requesterId,BookingStatus.valueOf(state), pageable);
                 break;
             case CURRENT:
-                userBookings = bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartAsc(
-                        requesterId, now, now, pageable);
+                userBookings = bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartAsc(requesterId, now, now, pageable);
                 break;
             case FUTURE:
-                userBookings = bookingRepository.findAllByBookerAndStartGreaterThanOrderByIdDesc(
-                        userRepository.getReferenceById(requesterId).getId(), now, pageable);
+                userBookings = bookingRepository.findAllByBookerAndStartGreaterThanOrderByIdDesc(userRepository.getReferenceById(requesterId).getId(), now, pageable).getContent();
                 break;
             case PAST:
                 userBookings = bookingRepository.findAllByBookerIdAndEndBeforeAndStatusOrderByStartDesc(

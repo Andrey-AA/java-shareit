@@ -21,10 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class UserRepositoryTests {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @MockBean
-    UserService userService;
+    private UserService userService;
 
     @Test
     void findAllUsersTest() {

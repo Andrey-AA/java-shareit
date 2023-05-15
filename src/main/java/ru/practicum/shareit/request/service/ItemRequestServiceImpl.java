@@ -51,7 +51,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         BookingServiceImpl.checkPagination(from, size);
         log.info("Проверка пользователя");
         userService.checkUserExistence(requesterId);
-        log.info("Пагинация");
         Pageable pageable = PageRequest.of(from / size, size);
         List<ItemRequest> itemRequests = itemRequestRepository
                 .getItemRequestByRequesterIdIsNotOrderByCreated(requesterId, pageable);

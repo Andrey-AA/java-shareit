@@ -43,10 +43,9 @@ class BookingRepositoryTests {
 
     @BeforeEach
     void init() {
-
-        user = new User(1L,"name", "email@email.com");
-        item = new Item(1L,"name","description",true,user.getId(),1L);
-        user2 = new User(2L,"name2", "email2@email.com");
+        user = new User(1L, "name", "email@email.com");
+        item = new Item(1L, "name", "description", true, user.getId(), 1L);
+        user2 = new User(2L, "name2", "email2@email.com");
         booking = new Booking(1L, LocalDateTime.of(2023, 1, 10, 10, 30),
                 LocalDateTime.of(2023, 3, 10, 10, 30), item, user2, WAITING);
     }

@@ -39,19 +39,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RequestIntegrationTests {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    ItemRequestRepository itemRequestRepository;
+    private ItemRequestRepository itemRequestRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    ItemRequestService itemRequestService;
+    private ItemRequestService itemRequestService;
 
     @Test
     @Rollback

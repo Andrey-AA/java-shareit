@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class UserUnitTests {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Test
     @Transactional
@@ -31,7 +31,6 @@ class UserUnitTests {
         assertEquals(0, userService.getAllUsers().size());
     }
 
-
     @Test
     @Transactional
     void updateUserTest() throws Exception {
@@ -43,29 +42,6 @@ class UserUnitTests {
         assertEquals(updatedUser.getName(), userService.getById(user.getId()).getName());
         assertEquals(user.getId(), userService.getById(user.getId()).getId());
     }
-
-  /*  @Test
-    @Rollback
-    @Transactional
-    void findUserByWrongIdTest() throws Exception {
-        UserDto user = new UserDto(99L, "name","email@mail.ru","666");
-        userService.saveUser(user);
-        userService.getById(user.getId());
-        assertEquals(user.getName(), userService.getById(user.getId()).getName());
-        assertEquals(user.getEmail(), userService.getById(user.getId()).getEmail());
-    }*/
-
-   /*  @Test
-     @Rollback
-     @Transactional
-    void saveAlreadyExistUserTest() throws Exception {
-        UserDto oldUser1 = new UserDto(1L, "name","email10@mail.ru", "666");
-        UserDto oldUser2 = new UserDto(2L, "name2","email12@mail.ru","666");
-        UserDto newUser = new UserDto(2L, "name","email12@mail.ru","dto");
-        userService.saveUser(oldUser1);
-        userService.saveUser(oldUser2);
-        assertThrows(UserAlreadyExistException.class, () -> userService.updateUser(newUser,1L));
-    }*/
 
     @Test
     @Rollback

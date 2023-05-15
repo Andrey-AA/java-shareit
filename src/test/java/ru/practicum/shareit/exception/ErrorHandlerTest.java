@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ErrorHandlerTest {
 
     @Autowired
-    ErrorHandler errorHandler;
+    private ErrorHandler errorHandler;
 
     @Test
     void handleIncorrectParameterException() {
@@ -51,10 +51,6 @@ class ErrorHandlerTest {
         UserAlreadyExistException e = new UserAlreadyExistException(message);
         ErrorResponse result = errorHandler.handleUserAlreadyExistException(e);
         assertEquals(message, result.getError());
-    }
-
-    @Test
-    void handleThrowable() {
     }
 
     @Test

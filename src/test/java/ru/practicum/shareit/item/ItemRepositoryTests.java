@@ -21,10 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ItemRepositoryTests {
 
     @Autowired
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Test
     void findAllItemsItemsTest() {

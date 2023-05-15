@@ -34,13 +34,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ItemControllerTests {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
-    ItemService itemService;
+    private ItemService itemService;
 
     @MockBean
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
 
     @Mock
     private UserService userService;
@@ -49,7 +49,6 @@ class ItemControllerTests {
     ObjectMapper objectMapper;
 
     private final String header = "X-Sharer-User-Id";
-
 
     private Item initItem;
 

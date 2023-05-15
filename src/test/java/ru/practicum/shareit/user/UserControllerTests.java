@@ -22,21 +22,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @WebMvcTest(UserController.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class UserControllerTests {
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
-    UserService mockUserService;
+    private UserService mockUserService;
 
     @MockBean
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Test
     void saveUserTest() throws Exception {
@@ -91,6 +90,4 @@ class UserControllerTests {
                 .andExpect(jsonPath("$.email").value("updatedemail@mail.ru"))
                 .andExpect(jsonPath("$.name").value("updatedName"));
     }
-
-
 }

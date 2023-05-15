@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @JsonTest
 class RequestJsonTests {
     @Autowired
-    private JacksonTester<UserDto> jsonFull;
+    private  JacksonTester<UserDto> jsonFull;
     @Autowired
     private JacksonTester<ItemRequestDto> jsonDto;
 

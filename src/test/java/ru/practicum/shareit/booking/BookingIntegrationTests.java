@@ -58,7 +58,6 @@ class BookingIntegrationTests {
                 .name("name")
                 .email("user1@email.com")
                 .build();
-
     }
 
     private static BookingFromDomain createBookingFromDomain(long itemId) {
@@ -74,7 +73,6 @@ class BookingIntegrationTests {
         ItemDto item = itemController.createItem(itemDto, user.getId());
         UserDto booker = userController.saveUser(userDto1);
         BookingShort booking = bookingController.createBooking(createBookingFromDomain(item.getId()), booker.getId());
-
     }
 
     @Test
