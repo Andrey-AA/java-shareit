@@ -21,26 +21,6 @@ public class BookingMapper {
         );
     }
 
-    public static BookingFromDomain toBookingFromDomain(@NonNull Booking booking) {
-        return new BookingFromDomain(
-                booking.getId(),
-                booking.getStart(),
-                booking.getEnd(),
-                booking.getItem().getId(),
-                booking.getBooker().getId(),
-                booking.getStatus()
-        );
-    }
-
-    public static List<BookingFromDomain> toBookingFromDomains(List<Booking> bookings) {
-        ArrayList<BookingFromDomain> bookingsDto = new ArrayList<>();
-
-        for (Booking booking: bookings) {
-            bookingsDto.add(toBookingFromDomain(booking));
-        }
-        return bookingsDto;
-    }
-
     public static BookingShort toBookingShort(@NonNull Booking booking) {
         return new BookingShort(
                 booking.getId(),

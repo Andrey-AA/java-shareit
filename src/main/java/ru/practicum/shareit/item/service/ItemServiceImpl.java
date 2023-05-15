@@ -50,7 +50,6 @@ public class ItemServiceImpl implements ItemService {
         List<ItemRequestDto> requests = itemRequestService.getAllItemRequests();
 
         for (ItemRequestDto itemRequestDto : requests) {
-
             if (itemRequestDto.getDescription().equalsIgnoreCase(itemDto.getName())) {
                 itemDto.setRequestId(itemRequestDto.getId());
             }

@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.InvalidItemParametersException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -21,16 +22,17 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.service.UserService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,6 +52,9 @@ class ItemIntegrationTests {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     ItemRepository itemRepository;
@@ -82,7 +87,6 @@ class ItemIntegrationTests {
         User user = userRepository.save(new User(1L, "name", "email@mail.com"));
         userRepository.save(new User(3L, "name2", "email2@mail.com"));
         Item item = new Item(1L, "item", "description", true, user.getId(), null);
-        List<Comment> comments = new ArrayList<>();
 
         item = itemRepository.save(item);
 
@@ -198,4 +202,65 @@ class ItemIntegrationTests {
         assertThrows(InvalidItemParametersException.class, () -> itemService.saveItem(itemDto2, 1L));
     }
 
+    @Test
+    void checkUpdateItem_withException() {
+        final ItemDto itemDto = ItemDto
+                .builder()
+                .id(1L)
+                .name("itemName")
+                .description("")
+                .available(true)
+                .build();
+        assertThrows(EntityNotFoundException.class, () -> itemService.updateItem(itemDto, 1L, 1L));
+
+    }
+
+    @Test
+    void checkUpdateItem_withOutException_andCheckIf() {
+        UserDto user = new UserDto(1, "testUser", "testEmail@test.com", "testDto");
+        user = userService.saveUser(user);
+
+        ItemDto itemDto = ItemDto
+                .builder()
+                .name("itemName")
+                .description("description")
+                .available(true)
+                .owner(user.getId())
+                .build();
+        itemDto = itemService.saveItem(itemDto, user.getId());
+
+        final ItemDto newItemDto = ItemDto
+                .builder()
+                .id(itemDto.getId())
+                .name(null)
+                .description(null)
+                .available(null)
+                .owner(null)
+                .build();
+
+        assertEquals(itemDto, itemService.updateItem(newItemDto, user.getId(), itemDto.getId()));
+    }
+
+    @Test
+    void equalsAndHashCodeTest() {
+        LocalDateTime now = LocalDateTime.now();
+        Comment comment1 = new Comment(1L, "testComment", 1L, 1L, now);
+        Comment comment2 = new Comment(1L, "testComment", 1L, 1L, now);
+        Comment comment3 = new Comment(2L, "testComment", 1L, 1L, now);
+
+        assertTrue(comment1.equals(comment2) && comment2.equals(comment1));
+        assertEquals(comment1.hashCode(), comment2.hashCode());
+
+        assertFalse(comment1.equals(comment3) || comment3.equals(comment1));
+        assertNotEquals(comment1.hashCode(), comment3.hashCode());
+
+        assertTrue(comment1.equals(comment2));
+        assertEquals(comment1.hashCode(), comment2.hashCode());
+
+        assertFalse(comment1.equals("test"));
+        assertNotEquals(comment1.hashCode(), "test".hashCode());
+
+        assertTrue(comment1.equals(comment1));
+        assertEquals(comment1.hashCode(), comment1.hashCode());
+    }
 }

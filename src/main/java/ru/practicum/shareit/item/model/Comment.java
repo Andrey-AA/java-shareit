@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,12 +33,17 @@ public class Comment {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Comment)) return false;
-        return id != null && id.equals(((Comment) o).getId());
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return id.equals(comment.id) &&
+                text.equals(comment.text) &&
+                itemId.equals(comment.itemId) &&
+                authorId.equals(comment.authorId) &&
+                created.equals(comment.created);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(id);
     }
 }
