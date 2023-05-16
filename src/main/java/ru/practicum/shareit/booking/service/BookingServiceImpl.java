@@ -168,22 +168,24 @@ public class BookingServiceImpl implements BookingService {
         log.info(String.format("Статус %s", BookingState.valueOf(state)));
         switch (BookingState.valueOf(state)) {
             case ALL:
-                userBookings = bookingRepository.findBookingsByUser(requesterId, pageable);
+                userBookings = bookingRepository.findBookingsByUser(requesterId, pageable).getContent();
                 break;
             case WAITING:
             case REJECTED:
                 userBookings = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(
-                        requesterId,BookingStatus.valueOf(state), pageable);
+                        requesterId,BookingStatus.valueOf(state), pageable).getContent();
                 break;
             case CURRENT:
-                userBookings = bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartAsc(requesterId, now, now, pageable);
+                userBookings = bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartAsc(
+                        requesterId, now, now, pageable).getContent();
                 break;
             case FUTURE:
-                userBookings = bookingRepository.findAllByBookerAndStartGreaterThanOrderByIdDesc(userRepository.getReferenceById(requesterId).getId(), now, pageable).getContent();
+                userBookings = bookingRepository.findAllByBookerAndStartGreaterThanOrderByIdDesc(
+                        userRepository.getReferenceById(requesterId).getId(), now, pageable).getContent();
                 break;
             case PAST:
                 userBookings = bookingRepository.findAllByBookerIdAndEndBeforeAndStatusOrderByStartDesc(
-                        requesterId, now, BookingStatus.APPROVED, pageable);
+                        requesterId, now, BookingStatus.APPROVED, pageable).getContent();
                 break;
             default:
                 throw new InvalidItemParametersException("Unknown state666: " + state);
@@ -203,28 +205,28 @@ public class BookingServiceImpl implements BookingService {
                 log.info(String.format("Статус  %s", BookingState.valueOf(state)));
         switch (BookingState.valueOf(state)) {
             case ALL: {
-                ownerBookings = bookingRepository.findAllByItemOwnerOrderByStartDesc(requesterId, pageable);
+                ownerBookings = bookingRepository.findAllByItemOwnerOrderByStartDesc(requesterId, pageable).getContent();
                 break;
             }
             case FUTURE: {
                 ownerBookings = bookingRepository.findAllByItemOwnerAndStartGreaterThanOrderByStartDesc(
-                        requesterId, now, pageable);
+                        requesterId, now, pageable).getContent();
                 break;
             }
             case PAST: {
                 ownerBookings = bookingRepository.findAllByItemOwnerAndEndBeforeOrderByStartDesc(
-                        requesterId, now, pageable);
+                        requesterId, now, pageable).getContent();
                 break;
             }
             case CURRENT: {
                 ownerBookings = bookingRepository.findAllByItemOwnerAndStartBeforeAndEndAfterOrderByStartDesc(
-                        requesterId, now, now, pageable);
+                        requesterId, now, now, pageable).getContent();
                 break;
             }
             case WAITING:
             case REJECTED: {
                 ownerBookings = bookingRepository.findAllByItemOwnerAndStatusOrderByStartDesc(
-                        requesterId,BookingStatus.valueOf(state), pageable);
+                        requesterId,BookingStatus.valueOf(state), pageable).getContent();
                 break;
             }
         }

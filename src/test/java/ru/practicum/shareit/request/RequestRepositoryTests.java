@@ -90,7 +90,7 @@ class RequestRepositoryTests {
                 .build();
         Pageable pageable = PageRequest.of(0, 20);
         itemRequestRepository.save(itemRequest);
-        List<ItemRequest> allRequest = itemRequestRepository.getItemRequestByRequesterIdIsNotOrderByCreated(user.getId(),pageable);
+        List<ItemRequest> allRequest = itemRequestRepository.getItemRequestByRequesterIdIsNotOrderByCreated(user.getId(),pageable).getContent();
         assertThat(allRequest).isEmpty();
     }
 

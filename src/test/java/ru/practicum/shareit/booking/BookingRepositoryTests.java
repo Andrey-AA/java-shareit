@@ -56,8 +56,8 @@ class BookingRepositoryTests {
         itemRepository.save(item);
         userRepository.save(user2);
         bookingRepository.save(booking);
-        List<Booking> bookingsByUser = bookingRepository.findBookingsByUser(user.getId(), Pageable.ofSize(10));
-        assertThat((long) bookingRepository.findBookingsByUser(user2.getId(), Pageable.ofSize(10)).size(), equalTo(1L));
+        List<Booking> bookingsByUser = bookingRepository.findBookingsByUser(user.getId(), Pageable.ofSize(10)).getContent();
+        assertThat((long) bookingRepository.findBookingsByUser(user2.getId(), Pageable.ofSize(10)).getContent().size(), equalTo(1L));
     }
 
     @Test

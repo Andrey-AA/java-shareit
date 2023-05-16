@@ -40,7 +40,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestFull> getItemRequestsByUserId(Long requesterId) {
-        log.info("Проверка пользователя");
+        log.info("Начата проверка существования пользователя");
         userService.checkUserExistence(requesterId);
         List<ItemRequest> itemRequests = itemRequestRepository.getAllByRequesterIdOrderByCreatedDesc(requesterId);
         return ItemRequestMapper.toFulls(itemRequests, itemRepository);
@@ -49,11 +49,11 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestFull> getAllItemRequestsWithPagination(Long requesterId, Integer from, Integer size) {
         BookingServiceImpl.checkPagination(from, size);
-        log.info("Проверка пользователя");
+        log.info("Началась проверка существования пользователя");
         userService.checkUserExistence(requesterId);
         Pageable pageable = PageRequest.of(from / size, size);
         List<ItemRequest> itemRequests = itemRequestRepository
-                .getItemRequestByRequesterIdIsNotOrderByCreated(requesterId, pageable);
+                .getItemRequestByRequesterIdIsNotOrderByCreated(requesterId, pageable).getContent();
         return ItemRequestMapper.toFulls(itemRequests, itemRepository);
     }
 
@@ -62,7 +62,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public ItemRequestDto saveItemRequest(Long requesterId, ItemRequestDto itemRequestDto) {
         log.info("Проверка существования пользователя");
         userService.checkUserExistence(requesterId);
-        log.info("Проверка наличия описания");
+        log.info("Проверка наличия описания у вещи");
 
         if (itemRequestDto.getDescription().isBlank()) {
             throw new InvalidItemParametersException("Поле Description не может быть пустым.");
