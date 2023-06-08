@@ -2,13 +2,15 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.BookingState;
+import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingFromDomain;
-import ru.practicum.shareit.booking.dto.BookingShort;
 import ru.practicum.shareit.booking.dto.BookingMapper;
+import ru.practicum.shareit.booking.dto.BookingShort;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.EntityNotFoundException;
@@ -97,7 +99,6 @@ public class BookingServiceImpl implements BookingService {
         } else {
             throw new IncorrectParameterException("Бронирование доступно только автору или владельцу вещи");
         }
-
         return BookingMapper.toBookingShort(booking);
     }
 
@@ -134,7 +135,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingShort cancelBooking(Long bookingId, boolean canceled, Long requesterId) {
+    public BookingShort cancelBooking(Long bookingId, Long requesterId) {
         log.info("Поступил запрос на отмену бронирования");
         userService.checkUserExistence(requesterId);
 
@@ -147,91 +148,95 @@ public class BookingServiceImpl implements BookingService {
             throw new IncorrectParameterException("Отменить бронирование может только автор вещи");
         }
 
-        if (canceled) {
-            booking.setStatus(BookingStatus.APPROVED);
-        } else {
-            booking.setStatus(BookingStatus.REJECTED);
-        }
+        booking.setStatus(BookingStatus.CANCELED);
 
         bookingRepository.save(booking);
         return BookingMapper.toBookingShort(booking);
     }
 
     @Override
-    public List<BookingShort> findBookingsByUser(String state, Long requesterId) {
+    public List<BookingShort> findBookingsByUser(String state, Long requesterId, Integer from, Integer size) {
+        state = BookingState.valueOf(state).name();
         log.info("Запрос на поиск бронирований пользователя");
         userService.checkUserExistence(requesterId);
         log.info("Провека на существование пользователя завершена успешно");
+        checkPagination(from, size);
         final LocalDateTime now = LocalDateTime.now();
-
-        List<Booking> userBookings = new ArrayList<>();
+        List<Booking> userBookings;
+        Pageable pageable = PageRequest.of(from / size, size);
 
         log.info(String.format("Статус %s", BookingState.valueOf(state)));
         switch (BookingState.valueOf(state)) {
-            case ALL: {
-                userBookings = bookingRepository.findBookingsByUser(requesterId);
+            case ALL:
+                userBookings = bookingRepository.findBookingsByUser(requesterId, pageable).getContent();
                 break;
-            }
             case WAITING:
-            case REJECTED: {
+            case REJECTED:
                 userBookings = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(
-                        requesterId,BookingStatus.valueOf(state));
+                        requesterId,BookingStatus.valueOf(state), pageable).getContent();
                 break;
-            }
-            case CURRENT: {
+            case CURRENT:
                 userBookings = bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartAsc(
-                        requesterId, now, now);
+                        requesterId, now, now, pageable).getContent();
                 break;
-            }
-            case FUTURE: {
+            case FUTURE:
                 userBookings = bookingRepository.findAllByBookerAndStartGreaterThanOrderByIdDesc(
-                        userRepository.getReferenceById(requesterId).getId(), now);
+                        userRepository.getReferenceById(requesterId).getId(), now, pageable).getContent();
                 break;
-            }
-            case PAST: {
+            case PAST:
                 userBookings = bookingRepository.findAllByBookerIdAndEndBeforeAndStatusOrderByStartDesc(
-                        requesterId, now, BookingStatus.APPROVED);
+                        requesterId, now, BookingStatus.APPROVED, pageable).getContent();
                 break;
-            }
+            default:
+                throw new InvalidItemParametersException("Unknown state666: " + state);
         }
         return BookingMapper.toBookingShorts(userBookings);
     }
 
     @Override
-    public List<BookingShort> findBookingsByOwner(String state, Long requesterId) {
+    public List<BookingShort> findBookingsByOwner(String state, Long requesterId, Integer from, Integer size) {
         log.info("Запрос на поиск бронирований по владельцу");
         userService.checkUserExistence(requesterId);
         log.info("Провека на существование пользователя завершена успешно");
+        checkPagination(from, size);
         List<Booking> ownerBookings = new ArrayList<>();
+        Pageable pageable = PageRequest.of(from / size, size);
         final LocalDateTime now = LocalDateTime.now();
-
-        log.info(String.format("Статус  %s", BookingState.valueOf(state)));
+                log.info(String.format("Статус  %s", BookingState.valueOf(state)));
         switch (BookingState.valueOf(state)) {
             case ALL: {
-                ownerBookings = bookingRepository.findAllByItemOwnerOrderByStartDesc(requesterId);
+                ownerBookings = bookingRepository.findAllByItemOwnerOrderByStartDesc(requesterId, pageable).getContent();
                 break;
             }
             case FUTURE: {
                 ownerBookings = bookingRepository.findAllByItemOwnerAndStartGreaterThanOrderByStartDesc(
-                        requesterId, now);
+                        requesterId, now, pageable).getContent();
                 break;
             }
             case PAST: {
-                ownerBookings = bookingRepository.findAllByItemOwnerAndEndBeforeOrderByStartDesc(requesterId, now);
+                ownerBookings = bookingRepository.findAllByItemOwnerAndEndBeforeOrderByStartDesc(
+                        requesterId, now, pageable).getContent();
                 break;
             }
             case CURRENT: {
                 ownerBookings = bookingRepository.findAllByItemOwnerAndStartBeforeAndEndAfterOrderByStartDesc(
-                        requesterId, now, now);
+                        requesterId, now, now, pageable).getContent();
                 break;
             }
             case WAITING:
             case REJECTED: {
                 ownerBookings = bookingRepository.findAllByItemOwnerAndStatusOrderByStartDesc(
-                        requesterId,BookingStatus.valueOf(state));
+                        requesterId,BookingStatus.valueOf(state), pageable).getContent();
                 break;
             }
         }
         return BookingMapper.toBookingShorts(ownerBookings);
+    }
+
+    public static void checkPagination(Integer from, Integer size) {
+        log.info("Проверка корректности параметров пагинации");
+        if ((from < 0) || (size < 1)) {
+            throw new InvalidItemParametersException("Неверный параметр пагинации.");
+        }
     }
 }

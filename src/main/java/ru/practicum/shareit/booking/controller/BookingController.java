@@ -41,26 +41,26 @@ public class BookingController {
     public BookingShort cancelBooking(@PathVariable Long bookingId,
                                       @RequestParam Boolean canceled,
                                       @RequestHeader(USER_ID) Long requesterId) {
-        return bookingService.cancelBooking(bookingId, canceled, requesterId);
+        return bookingService.cancelBooking(bookingId, requesterId);
     }
 
-    @GetMapping
+    @GetMapping()
     public List<BookingShort> findBookingsByUser(
             @RequestParam(name = "state", required = false, defaultValue = "ALL") String state,
-            @RequestHeader(USER_ID) Long requesterId) {
+            @RequestHeader(USER_ID) Long requesterId,
+            @RequestParam(name = "from", defaultValue = "0") Integer from,
+            @RequestParam(name = "size", defaultValue = "20") Integer size) {
         BookingState.checkState(state);
-        /*BookingState bookingState = BookingState.checkState(state);
-        if (bookingState == null) {
-            throw new IllegalArgumentException("Unknown state: " + state);
-        }*/
-        return bookingService.findBookingsByUser(state, requesterId);
+        return bookingService.findBookingsByUser(state, requesterId, from, size);
     }
 
     @GetMapping("/owner")
     public List<BookingShort> findBookingsByOwner(
             @RequestParam(name = "state", required = false, defaultValue = "ALL") String state,
-            @RequestHeader(USER_ID) Long requesterId) {
+            @RequestHeader(USER_ID) Long requesterId,
+            @RequestParam(name = "from", defaultValue = "0") Integer from,
+            @RequestParam(name = "size", defaultValue = "20") Integer size) {
        BookingState.checkState(state);
-       return bookingService.findBookingsByOwner(state, requesterId);
+       return bookingService.findBookingsByOwner(state, requesterId, from, size);
     }
 }

@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS items (
     description VARCHAR(5000) NOT NULL,
     available BOOLEAN,
     owner BIGINT REFERENCES users(id),
-    request BIGINT,
+    request_id BIGINT,
     CONSTRAINT pk_item PRIMARY KEY (id),
    CONSTRAINT fk_owner FOREIGN KEY (owner) REFERENCES users (id)
     );
@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS comments (
    text VARCHAR(255) NOT NULL,
    item_id BIGINT NOT NULL,
    author_id BIGINT NOT NULL,
+   created TIMESTAMP WITHOUT TIME ZONE,
    CONSTRAINT pk_comments PRIMARY KEY (id),
    CONSTRAINT fk_author FOREIGN KEY (author_id) REFERENCES users (id),
    CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES items (id)

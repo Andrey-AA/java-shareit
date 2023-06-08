@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
+@Builder
 public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +26,12 @@ public class ItemRequest {
 
     @Column(name = "created", nullable = false)
     private LocalDateTime created;
+
+    public ItemRequest(String description, Long requesterId, LocalDateTime created) {
+        this.description = description;
+        this.requesterId = requesterId;
+        this.created = created;
+    }
 
     @Override
     public boolean equals(Object o) {

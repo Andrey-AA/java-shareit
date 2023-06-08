@@ -29,8 +29,8 @@ public class Item {
     @JoinColumn(name = "owner", nullable = false)
     private Long owner;
 
-    @Column(name = "request")
-    private Long request;
+    @Column(name = "request_id")
+    private Long requestId;
 
     @Override
     public boolean equals(Object o) {

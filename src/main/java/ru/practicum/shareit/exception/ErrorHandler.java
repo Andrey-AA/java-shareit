@@ -50,10 +50,4 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     public ErrorResponse handleItemNotAvailableException(final ItemNotAvailableException e) {
         return new ErrorResponse(e.getMessage());
     }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleIncorrectBookingStatusException(final IncorrectBookingStatusException e) {
-        return new ErrorResponse(e.getMessage());
-    }
 }
