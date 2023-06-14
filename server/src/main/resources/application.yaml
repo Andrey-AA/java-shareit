@@ -24,5 +24,5 @@ spring:
           on-profile=ci,test
     driverClassName: org.h2.Driver
     url: jdbc:h2:mem:shareit
-    username: test
-    password: test
+    username: root
+    password: root
