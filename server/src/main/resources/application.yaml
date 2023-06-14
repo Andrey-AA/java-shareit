@@ -18,7 +18,11 @@ spring:
 #    username: root
 #    password: root
 
+    spring:
+      config:
+        activate:
+          on-profile=ci,test
     driverClassName: org.h2.Driver
     url: jdbc:h2:mem:shareit
-    username: root
-    password: root
+    username: test
+    password: test
