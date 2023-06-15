@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingFromDomain {
+	private Long id;
 	private long itemId;
 	@FutureOrPresent
 	@NotNull
