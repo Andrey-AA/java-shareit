@@ -1,41 +1,19 @@
 server:
   port: 9090
 
-logging:
-  level:
-    org:
-      zalando:
-        logbook: TRACE
-      springframework:
-        orm:
-          jpa: INFO
-          jpa.JpaTransactionManager: DEBUG
-        transaction: INFO
-        transaction.interceptor: TRACE
-    ru:
-      yandex:
-        practicum:
-          contollers: debug
 spring:
-  datasource:
-    driverClassName: org.h2.Driver
-    url: jdbc:h2:mem:shareit
-    username: kitty
-    password: purrrrr
   jpa:
     hibernate:
       ddl-auto: none
     properties:
       hibernate:
-        show_sql: true
         dialect: org.hibernate.dialect.PostgreSQL10Dialect
         format_sql: true
   sql:
     init:
       mode: always
-javax:
-  persistence:
-    schema-generation:
-      database:
-        action: create
-      create-script-source: schema.sql
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/shareit
+    username: root
+    password: root

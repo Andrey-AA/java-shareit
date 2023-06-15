@@ -11,6 +11,7 @@ import ru.practicum.shareit.booking.dto.BookingFromDomain;
 import ru.practicum.shareit.booking.dto.BookingState;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
@@ -26,9 +27,9 @@ public class BookingController {
 
 	@GetMapping
 	public ResponseEntity<Object> getBookings(@RequestHeader(USER_ID) Long userId,
-			@RequestParam(name = "state", defaultValue = "all") String stateParam,
-			@PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-			@Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+											  @RequestParam(name = "state", defaultValue = "all") String stateParam,
+											  @Min(0) @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+											  @Min(1) @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 		BookingState.checkState(stateParam);
 		log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
 		return bookingClient.getBookings(userId, stateParam, from, size);
