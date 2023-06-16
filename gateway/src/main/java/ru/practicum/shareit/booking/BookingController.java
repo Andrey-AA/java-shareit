@@ -27,7 +27,7 @@ public class BookingController {
 
 	@GetMapping
 	public ResponseEntity<Object> getBookings(@RequestHeader(USER_ID) Long userId,
-											  @RequestParam(name = "state", defaultValue = "all") String stateParam,
+											  @RequestParam(name = "state", defaultValue = "ALL") String stateParam,
 											  @Min(0) @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
 											  @Min(1) @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 		BookingState.checkState(stateParam);
