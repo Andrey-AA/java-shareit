@@ -25,6 +25,7 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -89,7 +90,8 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemLong> findItemsByUser(Long ownerId) {
         List<ItemLong> result = new ArrayList<>();
         log.info("Начался поиск вещей по ID владельца");
-        List<Item> userItems = itemRepository.findAllByOwner(ownerId);
+//        List<Item> userItems = itemRepository.findAllByOwner(ownerId);
+        List<Item> userItems = itemRepository.findAllByOwnerOrderByIdAsc(ownerId);
 
         List<Long> itemIds = userItems.stream().map(Item::getId).collect(Collectors.toList());
         List<Booking> itemBookings = bookingRepository.findAllByItemIdIn(itemIds);
