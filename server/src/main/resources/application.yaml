@@ -15,5 +15,9 @@ spring:
   datasource:
     driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/shareit
-    username: kitty
-    password: purrrrr
+    username: root
+    password: root
+
+
+#    username: kitty
+#    password: purrrrr
