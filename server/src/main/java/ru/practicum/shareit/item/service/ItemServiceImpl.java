@@ -92,7 +92,7 @@ public class ItemServiceImpl implements ItemService {
         List<Item> userItems = itemRepository.findAllByOwner(ownerId);
 
         List<Long> itemIds = userItems.stream().map(Item::getId).collect(Collectors.toList());
-        List<Booking> itemBookings = bookingRepository.findAllByItemIdInOrderByStartTimeDesc(itemIds);
+        List<Booking> itemBookings = bookingRepository.findAllByItemIdIn(itemIds);
 
         for (Item item : userItems) {
             List<Booking> bookings = itemBookings.stream()
