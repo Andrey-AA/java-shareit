@@ -50,7 +50,7 @@ public class BookingController {
             @RequestParam(name = "from", defaultValue = "0") Integer from,
             @RequestParam(name = "size", defaultValue = "20") Integer size) {
         BookingState.checkState(state);
-        return bookingService.findBookingsByUser(state, requesterId, from, size);
+        return bookingService.findBookingsByUser(requesterId, state, from, size);
     }
 
     @GetMapping("/owner")
