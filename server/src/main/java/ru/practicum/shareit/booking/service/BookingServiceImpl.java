@@ -156,7 +156,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingShort> findBookingsByUser(String state, Long requesterId, Integer from, Integer size) {
-        state = BookingState.valueOf(state).name();
+       // state = BookingState.valueOf(state).name();
         log.info("Запрос на поиск бронирований пользователя");
         userService.checkUserExistence(requesterId);
         log.info("Провека на существование пользователя завершена успешно");
@@ -165,15 +165,15 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> userBookings;
         Pageable pageable = PageRequest.of(from / size, size);
 
-        log.info(String.format("Статус %s", BookingState.valueOf(state.toUpperCase())));
-        switch (BookingState.valueOf(state.toUpperCase())) {
+        log.info(String.format("Статус %s", BookingState.valueOf(state)));
+        switch (BookingState.valueOf(state)) {
             case ALL:
                 userBookings = bookingRepository.findBookingsByUser(requesterId, pageable).getContent();
                 break;
             case WAITING:
             case REJECTED:
                 userBookings = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(
-                        requesterId,BookingStatus.valueOf(state.toUpperCase()), pageable).getContent();
+                        requesterId,BookingStatus.valueOf(state), pageable).getContent();
                 break;
             case CURRENT:
                 userBookings = bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartAsc(
@@ -202,8 +202,8 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> ownerBookings = new ArrayList<>();
         Pageable pageable = PageRequest.of(from / size, size);
         final LocalDateTime now = LocalDateTime.now();
-                log.info(String.format("Статус  %s", BookingState.valueOf(state.toUpperCase())));
-        switch (BookingState.valueOf(state.toUpperCase())) {
+                log.info(String.format("Статус  %s", BookingState.valueOf(state)));
+        switch (BookingState.valueOf(state)) {
             case ALL: {
                 ownerBookings = bookingRepository.findAllByItemOwnerOrderByStartDesc(requesterId, pageable).getContent();
                 break;
@@ -226,7 +226,7 @@ public class BookingServiceImpl implements BookingService {
             case WAITING:
             case REJECTED: {
                 ownerBookings = bookingRepository.findAllByItemOwnerAndStatusOrderByStartDesc(
-                        requesterId,BookingStatus.valueOf(state.toUpperCase()), pageable).getContent();
+                        requesterId,BookingStatus.valueOf(state), pageable).getContent();
                 break;
             }
         }
