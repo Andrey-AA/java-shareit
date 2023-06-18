@@ -168,7 +168,7 @@ public class BookingServiceImpl implements BookingService {
         log.info(String.format("Статус %s", BookingState.valueOf(state)));
         switch (BookingState.valueOf(state)) {
             case ALL:
-                userBookings = bookingRepository.findBookingsByUser(requesterId, pageable).getContent();
+                userBookings = bookingRepository.findAllByBookerIdOrderByStartDesc(requesterId, pageable).getContent();
                 break;
             case WAITING:
             case REJECTED:

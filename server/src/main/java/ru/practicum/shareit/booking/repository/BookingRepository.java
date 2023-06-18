@@ -12,8 +12,11 @@ import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long>  {
 
-    @Query(value = " SELECT * FROM Bookings WHERE booker like ?1 order by start_date DESC ", nativeQuery = true)
-    Page<Booking> findBookingsByUser(Long booker, Pageable pageable);
+    /*@Query(value = " SELECT * FROM Bookings WHERE booker like ?1 order by start_date DESC ", nativeQuery = true)
+    Page<Booking> findBookingsByUser(Long booker, Pageable pageable);*/
+
+    Page<Booking> findAllByBookerIdOrderByStartDesc(Long requesterId, Pageable pageable);
+
 
     Page<Booking> findAllByBookerIdAndStatusOrderByStartDesc(Long requesterId, BookingStatus state, Pageable pageable);
 
