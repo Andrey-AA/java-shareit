@@ -156,7 +156,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingShort> findBookingsByUser(Long requesterId, String state, Integer from, Integer size) {
-       // state = BookingState.valueOf(state).name();
         log.info("Запрос на поиск бронирований пользователя");
         userService.checkUserExistence(requesterId);
         log.info("Провека на существование пользователя завершена успешно");
