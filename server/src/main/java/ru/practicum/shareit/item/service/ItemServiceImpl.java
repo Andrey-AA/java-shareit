@@ -89,7 +89,6 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemLong> findItemsByUser(Long ownerId) {
         List<ItemLong> result = new ArrayList<>();
         log.info("Начался поиск вещей по ID владельца");
-//        List<Item> userItems = itemRepository.findAllByOwner(ownerId);
         List<Item> userItems = itemRepository.findAllByOwnerOrderByIdAsc(ownerId);
 
         List<Long> itemIds = userItems.stream().map(Item::getId).collect(Collectors.toList());
