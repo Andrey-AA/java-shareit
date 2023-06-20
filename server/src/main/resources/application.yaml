@@ -14,7 +14,7 @@ spring:
       mode: always
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/shareit
+    url: jdbc:postgresql://db:5432/shareit
     username: root
     password: root
 
