@@ -13,15 +13,19 @@ spring:
     init:
       mode: always
   datasource:
+    driverClassName: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
     driverClassName: org.h2.Driver
     url: jdbc:h2:mem:shareit
     username: test
     password: test
-
-  datasource:
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://db:5432/shareit
-    username: root
-    password: root
-#    username: kitty
-#    password: purrrrr
