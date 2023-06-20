@@ -18,10 +18,10 @@ spring:
     username: test
     password: test
 
-  #datasource:
-    #driverClassName: org.postgresql.Driver
-    #url: jdbc:postgresql://db:5432/shareit
-    #username: root
-    #password: root
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://db:5432/shareit
+    username: root
+    password: root
 #    username: kitty
 #    password: purrrrr
