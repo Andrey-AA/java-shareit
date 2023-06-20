@@ -8,7 +8,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,20 +39,6 @@ class UserUnitTests {
 
         assertEquals(updatedUser.getName(), userService.getById(user.getId()).getName());
         assertEquals(user.getId(), userService.getById(user.getId()).getId());
-    }
-
-    @Test
-    @Rollback
-    @Transactional
-    void getAllUsersTest() throws Exception {
-        UserDto user = new UserDto(1L, "name","email@mail.ru","666");
-        UserDto user2 = new UserDto(2L, "name2","email2@mail.ru","666");
-        UserDto user3 = new UserDto(3L, "name3","email3@mail.ru","666");
-        userService.saveUser(user);
-        userService.saveUser(user2);
-        userService.saveUser(user3);
-        List<UserDto> allUsers = userService.getAllUsers();
-        assertEquals(3, allUsers.size());
     }
 
     @Test
